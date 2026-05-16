@@ -1,0 +1,73 @@
+# MakeMe Top - Robots.txt
+# Updated: 2025-05-16
+
+User-agent: *
+Allow: /
+Allow: /biz.html
+Allow: /about.html
+Allow: /help-ai.html
+Allow: /privacy.html
+Allow: /terms.html
+
+# Disallow admin and user pages
+Disallow: /admin.html
+Disallow: /dashboard.html
+
+# Sitemap location
+Sitemap: https://makemetop.in/sitemap.xml
+
+# Crawl-delay (be nice to servers)
+Crawl-delay: 1
+
+# Specific rules for major search engines
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /admin.html
+Disallow: /dashboard.html
+
+# Google Images
+User-agent: Googlebot-Image
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /admin.html
+Disallow: /dashboard.html
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Disallow: /admin.html
+
+# Baidu (Chinese search)
+User-agent: Baiduspider
+Allow: /
+Disallow: /admin.html
+
+# Facebook crawler (for Open Graph)
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter crawler (for Twitter Cards)
+User-agent: Twitterbot
+Allow: /
+
+# WhatsApp crawler (for link previews)
+User-agent: WhatsApp
+Allow: /
+
+# Block bad bots
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Priority pages for crawling
+# Google will crawl these more frequently

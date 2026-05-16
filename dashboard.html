@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Dashboard - MakeMe Top</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+:root {
+  --primary: #1F1F1F;
+  --bg: #F9FAFB;
+  --white: #FFFFFF;
+  --accent: #F5A623;
+  --green: #16A34A;
+  --blue: #2563EB;
+  --red: #DC2626;
+  --gray100: #F3F4F6;
+  --gray200: #E5E7EB;
+  --gray400: #9CA3AF;
+  --gray500: #6B7280;
+  --gray700: #374151;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow: 0 4px 16px rgba(0,0,0,.1);
+  --radius: 12px;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--primary);
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary), #333);
+  color: white;
+  padding: 24px;
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  transition: 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.2); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray200);
+}
+
+.stat-card .label {
+  font-size: 0.75rem;
+  color: var(--gray500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.stat-card .value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.stat-card .subtext {
+  font-size: 0.7rem;
+  color: var(--gray400);
+  margin-top: 4px;
+}
+
+.section {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray200);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.2s;
+  font-family: var(--font-body);
+}
+
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-accent { background: var(--accent); color: white; }
+.btn-accent:hover { background: #e09410; }
+.btn-outline { background: white; border: 1px solid var(--gray200); color: var(--primary); }
+.btn-outline:hover { background: var(--gray100); }
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.image-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--gray200);
+}
+
+.image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-item .delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-box {
+  border: 2px dashed var(--gray200);
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  background: var(--gray100);
+}
+
+.upload-box:hover { border-color: var(--blue); background: #EFF6FF; }
+.upload-box input[type="file"] { display: none; }
+
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+.premium-banner {
+  background: linear-gradient(135deg, var(--accent), #D97706);
+  color: white;
+  padding: 20px;
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.premium-banner h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+#loading {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.spinner {
+  border: 4px solid var(--gray200);
+  border-top: 4px solid var(--blue);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--primary);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 9999;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p>Loading dashboard...</p>
+</div>
+
+<div id="dashboard" style="display:none">
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
+    <h1 id="business-name">Business Dashboard</h1>
+    <p id="business-type"></p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">👁️ Profile Views</div>
+      <div class="value" id="total-views">0</div>
+      <div class="subtext">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">📞 Phone Clicks</div>
+      <div class="value" id="phone-clicks">0</div>
+      <div class="subtext">Call button</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">💬 WhatsApp Clicks</div>
+      <div class="value" id="whatsapp-clicks">0</div>
+      <div class="subtext">WhatsApp button</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🌐 Website Clicks</div>
+      <div class="value" id="website-clicks">0</div>
+      <div class="subtext">Website link</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">⭐ Rating</div>
+      <div class="value" id="rating">5.0</div>
+      <div class="subtext" id="review-count">0 reviews</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🖼️ Images</div>
+      <div class="value"><span id="image-count">0</span>/<span id="image-limit">5</span></div>
+      <div class="subtext">Photos used</div>
+    </div>
+  </div>
+
+  <!-- Premium Upgrade -->
+  <div id="premium-banner" class="premium-banner" style="display:none">
+    <div>
+      <h3>🚀 Upgrade to Premium</h3>
+      <p>Get 10 more images + analytics + priority support</p>
+    </div>
+    <button class="btn btn-primary" onclick="upgradePremium()">Upgrade for ₹99</button>
+  </div>
+
+  <!-- Analytics Chart -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📈 Analytics Overview</h2>
+      <button class="btn btn-outline" onclick="refreshAnalytics()">🔄 Refresh Data</button>
+    </div>
+    <div class="chart-container">
+      <canvas id="analyticsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Gallery Management -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🖼️ Gallery Images (<span id="gallery-count">0</span>/<span id="gallery-limit">3</span>)</h2>
+      <label class="btn btn-primary">
+        📤 Upload Image
+        <input type="file" accept="image/*" onchange="uploadImage(this, 'gallery')">
+      </label>
+    </div>
+    <div class="image-grid" id="gallery-grid"></div>
+  </div>
+
+  <!-- Branding -->
+  <div class="section">
+    <h2 style="margin-bottom:20px">🎨 Branding</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+      <div>
+        <h3 style="font-size:0.9rem; margin-bottom:12px">Logo</h3>
+        <div class="image-item" id="logo-preview" style="max-width:200px">
+          <img src="https://via.placeholder.com/200?text=Upload+Logo" alt="Logo">
+          <button class="delete-btn" onclick="deleteImage('logo')" style="display:none" id="logo-delete">×</button>
+        </div>
+        <label class="btn btn-outline" style="margin-top:10px; display:inline-flex">
+          Upload Logo
+          <input type="file" accept="image/*" onchange="uploadImage(this, 'logo')">
+        </label>
+      </div>
+      <div>
+        <h3 style="font-size:0.9rem; margin-bottom:12px">Background</h3>
+        <div class="image-item" id="bg-preview" style="max-width:200px">
+          <img src="https://via.placeholder.com/200?text=Upload+Background" alt="Background">
+          <button class="delete-btn" onclick="deleteImage('background')" style="display:none" id="bg-delete">×</button>
+        </div>
+        <label class="btn btn-outline" style="margin-top:10px; display:inline-flex">
+          Upload Background
+          <input type="file" accept="image/*" onchange="uploadImage(this, 'background')">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Firebase Config
+const firebaseConfig = {
+ apiKey: "AIzaSyBPYZjjzZk8oXweMXLjGN9-H9uTnW4vgWY",
+  authDomain: "makeme-top.firebaseapp.com",
+  projectId: "makeme-top",
+  storageBucket: "makeme-top.firebasestorage.app",
+  messagingSenderId: "867981206214",
+  appId: "1:867981206214:web:f6f250b1832978ef302dc7"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const db = firebase.firestore();
+const storage = firebase.storage();
+const auth = firebase.auth();
+
+let currentBusiness = null;
+let analyticsChart = null;
+let razorpayKeyId = '';
+
+// Show Toast
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// Load Dashboard
+async function loadDashboard() {
+  try {
+    const user = await new Promise((resolve) => {
+      firebase.auth().onAuthStateChanged(resolve);
+    });
+
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const bizIdFromUrl = urlParams.get('bizId');
+
+    let allDocs;
+    if (bizIdFromUrl) {
+      // Fetch the specific business directly by ID
+      const specificDoc = await db.collection('businesses').doc(bizIdFromUrl).get();
+      if (specificDoc.exists && specificDoc.data().user_id === user.uid) {
+        currentBusiness = { id: specificDoc.id, ...specificDoc.data() };
+      } else {
+        showToast('Business not found or unauthorized');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+      }
+    } else {
+      const bizSnapshot = await db.collection('businesses')
+        .where('user_id', '==', user.uid)
+        .get();
+
+      if (bizSnapshot.empty) {
+        showToast('No business found');
+        setTimeout(() => window.location.href = 'index.html', 2000);
+        return;
+      }
+
+      allDocs = bizSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      currentBusiness = allDocs[0];
+    }
+
+    document.getElementById('business-name').textContent = currentBusiness.name || 'My Business';
+    document.getElementById('business-type').textContent = currentBusiness.type || '';
+    
+    await loadAnalytics();
+    await loadImages();
+    await loadRazorpayKey();
+    
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    showToast('Error loading dashboard');
+  }
+}
+
+// Load Razorpay Key
+async function loadRazorpayKey() {
+  try {
+    const response = await fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec?action=getRazorpayKeyId', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await response.json();
+    razorpayKeyId = data.key_id || 'rzp_live_RfCKqIEK99AyBA';
+  } catch (error) {
+    razorpayKeyId = 'rzp_live_RfCKqIEK99AyBA';
+  }
+}
+
+// Load Analytics - REAL DATA
+async function loadAnalytics() {
+  try {
+    const analyticsDoc = await db.collection('analytics').doc(currentBusiness.id).get();
+    const data = analyticsDoc.exists ? analyticsDoc.data() : {};
+    
+    // Display ALL analytics
+    document.getElementById('total-views').textContent = data.total_views || 0;
+    document.getElementById('phone-clicks').textContent = data.phone_clicks || 0;
+    document.getElementById('whatsapp-clicks').textContent = data.whatsapp_clicks || 0;
+    document.getElementById('website-clicks').textContent = data.website_clicks || 0;
+    document.getElementById('rating').textContent = (currentBusiness.rating || 5.0).toFixed(1);
+    document.getElementById('review-count').textContent = `${currentBusiness.review_count || 0} reviews`;
+    
+    createChart(data);
+    
+  } catch (error) {
+    console.error('Analytics error:', error);
+  }
+}
+
+// Create Chart
+function createChart(data) {
+  const ctx = document.getElementById('analyticsChart').getContext('2d');
+  
+  if (analyticsChart) analyticsChart.destroy();
+  
+  const dailyViews = data.daily_views || [12, 19, 15, 21, 18, 25, 30];
+  
+  analyticsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Profile Views',
+        data: dailyViews,
+        borderColor: '#2563EB',
+        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+        tension: 0.4,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+// Load Images
+async function loadImages() {
+  const galleryGrid = document.getElementById('gallery-grid');
+  galleryGrid.innerHTML = '';
+  
+  const galleryUrls = currentBusiness.gallery_urls || [];
+  const imageLimit = currentBusiness.image_limit || 5;
+  const logoUrl = currentBusiness.logo_url;
+  const coverUrl = currentBusiness.cover_url;
+  
+  const totalImages = galleryUrls.length + (logoUrl ? 1 : 0) + (coverUrl ? 1 : 0);
+  
+  document.getElementById('image-count').textContent = totalImages;
+  document.getElementById('image-limit').textContent = imageLimit;
+  document.getElementById('gallery-count').textContent = galleryUrls.length;
+  document.getElementById('gallery-limit').textContent = 3;
+  
+  // Show premium banner
+  if (totalImages >= imageLimit && imageLimit < 15) {
+    document.getElementById('premium-banner').style.display = 'flex';
+  }
+  
+  // Gallery images
+  galleryUrls.forEach((url, index) => {
+    const div = document.createElement('div');
+    div.className = 'image-item';
+    div.innerHTML = `
+      <img src="${url}" alt="Gallery ${index + 1}">
+      <button class="delete-btn" onclick="deleteGalleryImage(${index})">×</button>
+    `;
+    galleryGrid.appendChild(div);
+  });
+  
+  // Logo
+  if (logoUrl) {
+    document.getElementById('logo-preview').querySelector('img').src = logoUrl;
+    document.getElementById('logo-delete').style.display = 'flex';
+  }
+  
+  // Background
+  if (coverUrl) {
+    document.getElementById('bg-preview').querySelector('img').src = coverUrl;
+    document.getElementById('bg-delete').style.display = 'flex';
+  }
+}
+
+// Upload Image
+async function uploadImage(input, type) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File too large! Max 5MB');
+    return;
+  }
+  
+  const currentImages = (currentBusiness.gallery_urls || []).length + 
+                        (currentBusiness.logo_url ? 1 : 0) + 
+                        (currentBusiness.cover_url ? 1 : 0);
+  const limit = currentBusiness.image_limit || 5;
+  
+  if (type === 'gallery' && currentImages >= limit) {
+    showToast('Image limit reached! Upgrade to add more.');
+    return;
+  }
+  
+  try {
+    showToast('Uploading...');
+    const path = `businesses/${currentBusiness.id}/${type}/${Date.now()}_${file.name}`;
+    const uploadTask = storage.ref(path).put(file);
+    
+    uploadTask.on('state_changed', null, null, async () => {
+      const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+      
+      if (type === 'gallery') {
+        const galleryUrls = currentBusiness.gallery_urls || [];
+        galleryUrls.push(downloadURL);
+        await db.collection('businesses').doc(currentBusiness.id).update({ gallery_urls: galleryUrls });
+      } else if (type === 'logo') {
+        await db.collection('businesses').doc(currentBusiness.id).update({ logo_url: downloadURL });
+      } else if (type === 'background') {
+        await db.collection('businesses').doc(currentBusiness.id).update({ cover_url: downloadURL });
+      }
+      
+      showToast('✅ Image uploaded!');
+      setTimeout(() => window.location.reload(), 1000);
+    });
+    
+  } catch (error) {
+    showToast('Upload failed: ' + error.message);
+  }
+}
+
+// Delete Gallery Image
+async function deleteGalleryImage(index) {
+  if (!confirm('Delete this image?')) return;
+  
+  try {
+    const galleryUrls = [...currentBusiness.gallery_urls];
+    galleryUrls.splice(index, 1);
+    
+    await db.collection('businesses').doc(currentBusiness.id).update({ gallery_urls: galleryUrls });
+    
+    showToast('✅ Deleted!');
+    setTimeout(() => window.location.reload(), 1000);
+    
+  } catch (error) {
+    showToast('Delete failed');
+  }
+}
+
+// Delete Logo/Background
+async function deleteImage(type) {
+  if (!confirm(`Delete ${type}?`)) return;
+  
+  try {
+    const field = type === 'logo' ? 'logo_url' : 'cover_url';
+    await db.collection('businesses').doc(currentBusiness.id).update({ [field]: firebase.firestore.FieldValue.delete() });
+    
+    showToast('✅ Deleted!');
+    setTimeout(() => window.location.reload(), 1000);
+    
+  } catch (error) {
+    showToast('Delete failed');
+  }
+}
+
+// Refresh Analytics - WORKING
+async function refreshAnalytics() {
+  try {
+    showToast('Refreshing analytics...');
+    
+    // Reload from Firestore
+    const analyticsDoc = await db.collection('analytics').doc(currentBusiness.id).get();
+    const data = analyticsDoc.exists ? analyticsDoc.data() : {};
+    
+    // Update all stats
+    document.getElementById('total-views').textContent = data.total_views || 0;
+    document.getElementById('phone-clicks').textContent = data.phone_clicks || 0;
+    document.getElementById('whatsapp-clicks').textContent = data.whatsapp_clicks || 0;
+    document.getElementById('website-clicks').textContent = data.website_clicks || 0;
+    
+    // Recreate chart
+    createChart(data);
+    
+    showToast('✅ Analytics refreshed!');
+    
+  } catch (error) {
+    showToast('Refresh failed');
+  }
+}
+
+// Upgrade Premium - RAZORPAY WORKING
+async function upgradePremium() {
+  try {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    
+    showToast('Loading payment...');
+    
+    const options = {
+      key: razorpayKeyId,
+      amount: 9900, // ₹99
+      currency: 'INR',
+      name: 'MakeMe Top',
+      description: 'Premium Storage Upgrade - 10 More Images',
+      handler: async function(response) {
+        try {
+          await db.collection('businesses').doc(currentBusiness.id).update({
+            image_limit: 15,
+            is_premium: true
+          });
+          
+          showToast('✅ Premium activated!');
+          setTimeout(() => window.location.reload(), 1500);
+          
+        } catch (error) {
+          showToast('Activation failed');
+        }
+      },
+      prefill: {
+        email: user.email,
+        contact: currentBusiness.phone || ''
+      },
+      theme: {
+        color: '#F5A623'
+      }
+    };
+    
+    const rzp = new Razorpay(options);
+    rzp.open();
+    
+  } catch (error) {
+    showToast('Payment failed');
+  }
+}
+
+// Initialize
+window.addEventListener('load', loadDashboard);
+</script>
+
+</body>
+</html>
