@@ -522,12 +522,12 @@ import { getFirestore, doc, getDoc, collection, getDocs, query, where, orderBy, 
                             from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
-  apiKey:            "AIzaSyDwx-GoLV3-T5_zEURlqUb1LXa48gbqhM8",
-  authDomain:        "live-voting-b236f.firebaseapp.com",
-  projectId:         "live-voting-b236f",
-  storageBucket:     "live-voting-b236f.firebasestorage.app",
-  messagingSenderId: "591198383755",
-  appId:             "1:591198383755:web:6dc9fefcc6dd495048ae8e"
+  apiKey: "AIzaSyBPYZjjzZk8oXweMXLjGN9-H9uTnW4vgWY",
+  authDomain: "makeme-top.firebaseapp.com",
+  projectId: "makeme-top",
+  storageBucket: "makeme-top.firebasestorage.app",
+  messagingSenderId: "867981206214",
+  appId: "1:867981206214:web:f6f250b1832978ef302dc7"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -850,6 +850,12 @@ function updateSEO(b) {
   let bcTag = document.getElementById('breadcrumb-schema');
   if (!bcTag) { bcTag = document.createElement('script'); bcTag.type='application/ld+json'; bcTag.id='breadcrumb-schema'; document.head.appendChild(bcTag); }
   bcTag.textContent = JSON.stringify(breadcrumb);
+  
+  // Confirm SEO applied
+  console.log('✅ SEO enhancements applied for:', b.name);
+  console.log('  - Title:', title.substring(0, 50) + '...');
+  console.log('  - Image:', image.substring(0, 60) + '...');
+  console.log('  - Structured data: LocalBusiness + Breadcrumbs injected');
 }
 
 // ── UI helpers ──

@@ -1,73 +1,175 @@
-# MakeMe Top - Robots.txt
-# Updated: 2025-05-16
+# ════════════════════════════════════════════════════════════════════
+# MakeMe Top - robots.txt
+# Website: https://makemetop.in
+# Business Profile Directory for Kashmir
+# Last Updated: 2026-05-16
+# ════════════════════════════════════════════════════════════════════
+
+# ─── DEFAULT RULES (All Bots) ───────────────────────────────────────
 
 User-agent: *
 Allow: /
+
+# Public pages - explicitly allow
+Allow: /index.html
 Allow: /biz.html
 Allow: /about.html
 Allow: /help-ai.html
 Allow: /privacy.html
 Allow: /terms.html
+Allow: /refund.html
 
-# Disallow admin and user pages
+# Static assets
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+Allow: /icon-*.png
+Allow: /manifest.json
+
+# Disallow private/admin pages
 Disallow: /admin.html
 Disallow: /dashboard.html
+Disallow: /admin/
+Disallow: /api/
 
-# Sitemap location
-Sitemap: https://makemetop.in/sitemap.xml
+# Disallow Firebase SDK (no need to crawl)
+Disallow: /firebase-config.js
 
-# Crawl-delay (be nice to servers)
+# Crawl delay (be nice to server)
 Crawl-delay: 1
 
-# Specific rules for major search engines
+# ─── SITEMAP LOCATION ───────────────────────────────────────────────
 
-# Google
+Sitemap: https://makemetop.in/sitemap.xml
+
+# ─── GOOGLE BOT ─────────────────────────────────────────────────────
+
 User-agent: Googlebot
 Allow: /
 Disallow: /admin.html
 Disallow: /dashboard.html
+Disallow: /admin/
 
-# Google Images
+# Google Images - allow all images
 User-agent: Googlebot-Image
 Allow: /
 
-# Bing
+# Google Mobile - optimize for mobile
+User-agent: Googlebot-Mobile
+Allow: /
+
+# ─── BING BOT ───────────────────────────────────────────────────────
+
 User-agent: Bingbot
 Allow: /
 Disallow: /admin.html
 Disallow: /dashboard.html
+Disallow: /admin/
+Crawl-delay: 1
 
-# Yandex
+# ─── OTHER SEARCH ENGINES ───────────────────────────────────────────
+
+# Yandex (Russian search engine)
 User-agent: Yandex
 Allow: /
 Disallow: /admin.html
+Disallow: /admin/
 
-# Baidu (Chinese search)
+# Baidu (Chinese search engine)
 User-agent: Baiduspider
 Allow: /
 Disallow: /admin.html
+Disallow: /admin/
 
-# Facebook crawler (for Open Graph)
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /admin.html
+
+# ─── SOCIAL MEDIA CRAWLERS ──────────────────────────────────────────
+
+# Facebook (for Open Graph previews)
 User-agent: facebookexternalhit
 Allow: /
 
-# Twitter crawler (for Twitter Cards)
+# Twitter (for Twitter Card previews)
 User-agent: Twitterbot
 Allow: /
 
-# WhatsApp crawler (for link previews)
+# WhatsApp (for link previews)
 User-agent: WhatsApp
 Allow: /
 
-# Block bad bots
-User-agent: MJ12bot
+# LinkedIn (for link previews)
+User-agent: LinkedInBot
+Allow: /
+
+# Telegram (for link previews)
+User-agent: TelegramBot
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
+Allow: /
+
+# ─── BLOCK BAD BOTS ─────────────────────────────────────────────────
+
+# SEO analysis bots (aggressive crawlers)
+User-agent: AhrefsBot
 Disallow: /
 
-User-agent: AhrefsBot
+User-agent: MJ12bot
 Disallow: /
 
 User-agent: SemrushBot
 Crawl-delay: 10
 
-# Priority pages for crawling
-# Google will crawl these more frequently
+User-agent: DotBot
+Disallow: /
+
+# Email harvesters
+User-agent: EmailCollector
+Disallow: /
+
+User-agent: EmailSiphon
+Disallow: /
+
+# Content scrapers
+User-agent: WebReaper
+Disallow: /
+
+User-agent: WebCopier
+Disallow: /
+
+User-agent: Offline Explorer
+Disallow: /
+
+User-agent: HTTrack
+Disallow: /
+
+User-agent: wget
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+# Generic bad bots
+User-agent: *BadBot*
+Disallow: /
+
+User-agent: *Scraper*
+Disallow: /
+
+# ════════════════════════════════════════════════════════════════════
+# NOTES
+# ════════════════════════════════════════════════════════════════════
+#
+# 1. This robots.txt allows all legitimate search engines
+# 2. Admin pages are blocked from indexing
+# 3. Social media crawlers can access for link previews
+# 4. Aggressive SEO bots and scrapers are blocked
+# 5. Sitemap is at: https://makemetop.in/sitemap.xml
+#
+# To test: https://www.google.com/webmasters/tools/robots-testing-tool
+#
+# ════════════════════════════════════════════════════════════════════
