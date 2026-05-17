@@ -792,49 +792,28 @@ function updateSEO(b) {
   document.getElementById('tw-desc').content  = desc;
   document.getElementById('tw-image').content = image;
 
-  // Schema.org LocalBusiness — full rich snippet
+  // Schema.org LocalBusiness — CLEAN rich snippet (image, title, description, reviews only)
   const schema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": b.name,
-    "alternateName": [`${b.name} Kashmir`, `${b.name} Srinagar`, `${b.name} J&K`, `MBP – ${b.name}`],
     "description": b.description || `${b.name} – verified ${b.type||'local business'} in Srinagar, Jammu & Kashmir. Listed on MakeMe Top MBP.`,
     "url": url,
-    "dateModified": new Date().toISOString().split('T')[0],
-    "identifier": `mbp-${b.id}`,
     "image": image,
-    "logo": { "@type": "ImageObject", "url": b.logo_url || 'https://makemetop.in/icon-512.png' },
-    "telephone": b.phone || '',
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": b.address || '',
-      "addressLocality": "Srinagar",
-      "addressRegion": "Jammu & Kashmir",
-      "postalCode": "190001",
-      "addressCountry": "IN"
-    },
-    "geo": { "@type": "GeoCoordinates", "latitude": 34.0837, "longitude": 74.7973 },
-    "hasMap": `https://maps.google.com/?q=${encodeURIComponent((b.address||b.name)+', Srinagar J&K')}`,
-    "openingHours": "Mo-Su 00:00-23:59",
-    "priceRange": "₹",
-    "currenciesAccepted": "INR",
-    "inLanguage": "en-IN",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "MakeMe Top – MBP",
-      "url": "https://makemetop.in"
-    },
-    ...(b.review_count && b.rating ? {
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": Number(b.rating).toFixed(1),
-        "reviewCount": b.review_count,
-        "bestRating": "5",
-        "worstRating": "1"
-      }
-    } : {}),
-    ...(b.website ? { "sameAs": [b.website, url] } : { "sameAs": [url] })
+    "logo": { "@type": "ImageObject", "url": b.logo_url || 'https://makemetop.in/icon-512.png' }
   };
+  
+  // Add rating ONLY if reviews exist
+  if (b.review_count && b.rating) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": Number(b.rating).toFixed(1),
+      "reviewCount": b.review_count,
+      "bestRating": "5",
+      "worstRating": "1"
+    };
+  }
+  
   document.getElementById('biz-schema').textContent = JSON.stringify(schema);
 
   // BreadcrumbList
@@ -954,44 +933,6 @@ const calIcon   = () => svgWrap('<rect x="3" y="4" width="18" height="18" rx="2"
 
 // keyboard: close lightbox on Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-  
-  // Track via Apps Script
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbys56V2LEnoQhJ_3WxSVCr6yfSTKWlOP1IdHbnKZHfKioonJiTeTp_3WDC5wr7iih6_dA/exec';
-async function trackProfileView(businessId) {
-  try {
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'trackAnalytics',
-        business_id: businessId,
-        event_type: 'view'
-      })
-    });
-    
-    console.log('✅ Profile view tracked');
-  } catch(error) {
-    console.error('Tracking error:', error);
-  }
-}
-
-async function trackClick(businessId, clickType) {
-  try {
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'trackAnalytics',
-        business_id: businessId,
-        event_type: clickType
-      })
-    });
-    
-    console.log('✅ Click tracked:', clickType);
-  } catch(error) {
-    console.error('Click tracking error:', error);
-  }
-}
 </script>
 </body>
 </html>
