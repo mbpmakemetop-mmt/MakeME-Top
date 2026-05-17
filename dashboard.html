@@ -491,24 +491,61 @@ async function loadRazorpayKey() {
   }
 }
 
-// Load Analytics - REAL DATA
+// Load Analytics - REAL DATA from analytics_events
 async function loadAnalytics() {
   try {
-    const analyticsDoc = await db.collection('analytics').doc(currentBusiness.id).get();
-    const data = analyticsDoc.exists ? analyticsDoc.data() : {};
+    // ✅ Read from analytics_events (where data actually is!)
+    const eventsSnapshot = await db.collection('analytics_events')
+      .where('biz_id', '==', currentBusiness.id)
+      .get();
     
-    // Display ALL analytics
-    document.getElementById('total-views').textContent = data.total_views || 0;
-    document.getElementById('phone-clicks').textContent = data.phone_clicks || 0;
-    document.getElementById('whatsapp-clicks').textContent = data.whatsapp_clicks || 0;
-    document.getElementById('website-clicks').textContent = data.website_clicks || 0;
+    // Count by type
+    let views = 0, calls = 0, whatsapps = 0, websites = 0;
+    const dailyCounts = [0, 0, 0, 0, 0, 0, 0]; // Last 7 days
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    eventsSnapshot.forEach(doc => {
+      const event = doc.data();
+      const type = event.type;
+      
+      // Count totals
+      if (type === 'view') views++;
+      else if (type === 'call') calls++;
+      else if (type === 'whatsapp') whatsapps++;
+      else if (type === 'website') websites++;
+      
+      // Count daily views for chart (last 7 days)
+      if (type === 'view' && event.created_at) {
+        const eventDate = event.created_at.toDate();
+        const daysDiff = Math.floor((today - eventDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff >= 0 && daysDiff < 7) {
+          dailyCounts[6 - daysDiff]++;
+        }
+      }
+    });
+    
+    // Display counts
+    document.getElementById('total-views').textContent = views.toLocaleString();
+    document.getElementById('phone-clicks').textContent = calls.toLocaleString();
+    document.getElementById('whatsapp-clicks').textContent = whatsapps.toLocaleString();
+    document.getElementById('website-clicks').textContent = websites.toLocaleString();
     document.getElementById('rating').textContent = (currentBusiness.rating || 5.0).toFixed(1);
     document.getElementById('review-count').textContent = `${currentBusiness.review_count || 0} reviews`;
     
-    createChart(data);
+    // Create chart with REAL daily data
+    createChart({ daily_views: dailyCounts });
+    
+    console.log('✅ Analytics loaded:', { views, calls, whatsapps, websites });
     
   } catch (error) {
     console.error('Analytics error:', error);
+    // Show zeros on error
+    document.getElementById('total-views').textContent = '0';
+    document.getElementById('phone-clicks').textContent = '0';
+    document.getElementById('whatsapp-clicks').textContent = '0';
+    document.getElementById('website-clicks').textContent = '0';
   }
 }
 
@@ -673,26 +710,11 @@ async function deleteImage(type) {
   }
 }
 
-// Refresh Analytics - WORKING
 async function refreshAnalytics() {
   try {
     showToast('Refreshing analytics...');
-    
-    // Reload from Firestore
-    const analyticsDoc = await db.collection('analytics').doc(currentBusiness.id).get();
-    const data = analyticsDoc.exists ? analyticsDoc.data() : {};
-    
-    // Update all stats
-    document.getElementById('total-views').textContent = data.total_views || 0;
-    document.getElementById('phone-clicks').textContent = data.phone_clicks || 0;
-    document.getElementById('whatsapp-clicks').textContent = data.whatsapp_clicks || 0;
-    document.getElementById('website-clicks').textContent = data.website_clicks || 0;
-    
-    // Recreate chart
-    createChart(data);
-    
+    await loadAnalytics();  // ✅ Just call the updated function
     showToast('✅ Analytics refreshed!');
-    
   } catch (error) {
     showToast('Refresh failed');
   }
