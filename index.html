@@ -2901,7 +2901,13 @@ function injectBizSchema(b) {
   });
 }
 
-function openWebsite() { let url=currentBizData?.website; if(!url)return; if(!url.startsWith('http'))url='https://'+url; window.open(url,'_blank','noopener'); }
+function openWebsite() { 
+  let url=currentBizData?.website; 
+  if(!url)return; 
+  if(currentBizData?.id) trackEvent(currentBizData.id, 'website');
+  if(!url.startsWith('http'))url='https://'+url; 
+  window.open(url,'_blank','noopener'); 
+}
 
 // ══════════════════════════════════════
 //  REVIEWS (with 1-per-user check)
@@ -3329,7 +3335,11 @@ async function adminResolveClaim(claimId, action, bizId, newOwnerUid, newOwnerEm
     loadAdmin();
   } catch(e) { showToast('❌ Error: ' + e.message); }
 }
-function callBusiness() { if (!currentBizData?.phone) return; window.location.href='tel:'+currentBizData.phone.replace(/\s/g,''); }
+function callBusiness() { 
+  if (!currentBizData?.phone) return;
+  if (currentBizData?.id) trackEvent(currentBizData.id, 'call');
+  window.location.href='tel:'+currentBizData.phone.replace(/\s/g,''); 
+}
 function whatsappBusiness() { if(currentBizData?.id) trackEvent(currentBizData.id,'whatsapp'); const num=(currentBizData?.whatsapp||currentBizData?.phone||'').replace(/\D/g,''); if(!num){showToast('⚠️ WhatsApp not available');return;} window.open('https://wa.me/'+(num.startsWith('91')?num:'91'+num),'_blank'); }
 function shareBusiness() {
   if (!currentBizData) return;
