@@ -42,8 +42,42 @@
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
-
-
+ <url>
+    <loc>https://makemetop.in/blog/dal-lake-guide.html</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+ <url>
+    <loc>https://makemetop.in/blog/gulmarg-guide.html</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+         <url>
+    <loc>https://makemetop.in/blog/gurez-valley-guide.html</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+         <url>
+    <loc>https://makemetop.in/blog/kashmir-skiing-guide.html</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+         <url>
+    <loc>https://makemetop.in/blog/pahalgam-guide.html</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+         <url>
+    <loc>https://makemetop.in/blog/sinthantop-guide.html</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
   <!-- TripOrbit (Tour and Travel) | Travel Agency | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=4PRoxicyVoe3XbeDpD4l</loc>
