@@ -3,42 +3,42 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
   <!-- MakeMe Top | makemetop.in -->
-  <!-- Generated: 2026-05-16T15:44:55.053Z -->
-  <!-- Total profiles: 11 | With images: 11 -->
+  <!-- Generated: 2026-05-19T07:10:06.799Z -->
+  <!-- Total profiles: 12 | With images: 12 -->
 
   <url>
     <loc>https://makemetop.in/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://makemetop.in/help-ai.html</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://makemetop.in/about.html</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://makemetop.in/privacy.html</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://makemetop.in/terms.html</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://makemetop.in/refund.html</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -60,7 +60,7 @@
   <!-- Vellfire Holidays | Travel Agency | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=BJMATHvIiwQNulUpSkfS</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -86,7 +86,7 @@
   <!-- Lake House Palace | Resort | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=RWMGlXwAGI7K3MHXql3K</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -99,7 +99,7 @@
   <!-- Kashmir Hosts | Travel Agency | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=ShqBlvT9pV1KohNly2QN</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -112,7 +112,7 @@
   <!-- Kashmir Glide tour and travel | Travel Agency | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=V2pBWCupeg0TA1KG1at0</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -122,10 +122,23 @@
     </image:image>
   </url>
 
+  <!-- Olympias Athena | Houseboat | Premium -->
+  <url>
+    <loc>https://makemetop.in/biz.html?id=VoZuuLlmC8HfsqS0dOSo</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://firebasestorage.googleapis.com/v0/b/makeme-top.firebasestorage.app/o/businesses%2FVoZuuLlmC8HfsqS0dOSo%2Flogo%2F1778949925177_DSC_0044-toolvera.webp?alt=media&amp;token=eea5082b-71a4-4a61-99d6-c83ea936fe1a</image:loc>
+      <image:title>Olympias Athena</image:title>
+      <image:caption>**Olympias Athena Group of Houseboats** is a luxury family-owned houseboat stay at Dal Lake, Srinagar, offering authentic Kashmiri hospitality, beauti...</image:caption>
+    </image:image>
+  </url>
+
   <!-- Havenly Horizon Tours | Travel Agency | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=VpFkFtCExrcGMC0X459J</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
@@ -177,7 +190,7 @@
   <!-- Sun Seekers | Travel Agency | Premium -->
   <url>
     <loc>https://makemetop.in/biz.html?id=dEu2OCPa7REwbXVvCHKU</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-05-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <image:image>
