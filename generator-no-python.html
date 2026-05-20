@@ -2,168 +2,201 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
-<title>MBP Generator - Working Version</title>
+<title>FINAL Working Generator</title>
 <style>
-body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}
-.card{background:#fff;padding:30px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
-h1{color:#1F1F1F;margin-bottom:10px}
-.btn{background:#F5A623;color:#fff;border:none;padding:15px 30px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold}
+body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:20px;background:#f5f5f5}
+.card{background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+h1{color:#1F1F1F;margin-bottom:20px}
+.btn{background:#F5A623;color:#fff;border:none;padding:15px 30px;font-size:16px;border-radius:8px;cursor:pointer;font-weight:bold}
 .btn:hover{background:#E09617}
 .btn:disabled{background:#ccc;cursor:not-allowed}
-#status{margin-top:20px;padding:15px;border-radius:5px;display:none}
-.success{background:#d4edda;border:1px solid #28a745;color:#155724}
-.error{background:#f8d7da;border:1px solid #dc3545;color:#721c24}
-.loading{background:#d1ecf1;border:1px solid #17a2b8;color:#0c5460}
-.file-list{margin-top:20px}
-.file-item{background:#f8f9fa;padding:10px;margin:5px 0;border-radius:5px;display:flex;justify-content:space-between;align-items:center}
-.download-link{background:#28a745;color:#fff;padding:8px 15px;text-decoration:none;border-radius:4px;font-size:14px}
-.download-link:hover{background:#218838}
+#status{margin-top:20px;padding:15px;border-radius:8px;display:none}
+.success{background:#d4edda;border:2px solid #28a745;color:#155724}
+.error{background:#f8d7da;border:2px solid #dc3545;color:#721c24}
+.loading{background:#d1ecf1;border:2px solid #17a2b8;color:#0c5460}
+.files{margin-top:25px}
+.file-item{background:#f8f9fa;padding:12px 16px;margin:8px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
+.download{background:#28a745;color:#fff;padding:8px 16px;text-decoration:none;border-radius:5px;font-size:14px;font-weight:600}
+.download:hover{background:#218838}
 </style>
 </head>
 <body>
 
 <div class="card">
-<h1>🚀 MBP Business Page Generator</h1>
-<p>Click the button to generate individual HTML pages for all your businesses.</p>
-<br>
-<button class="btn" id="genBtn" onclick="generate()">Generate Pages Now</button>
+<h1>🚀 FINAL Working Generator</h1>
+<p>This version uses pure string concatenation - no template literals that break!</p>
+<button class="btn" id="btn" onclick="gen()">Generate Pages</button>
 <div id="status"></div>
-<div id="files"></div>
+<div id="files" class="files"></div>
 </div>
 
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import{getFirestore,collection,getDocs,query,where}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-const app=initializeApp({
-apiKey:"AIzaSyBPYZjjzZk8oXweMXLjGN9-H9uTnW4vgWY",
-authDomain:"makeme-top.firebaseapp.com",
-projectId:"makeme-top",
-storageBucket:"makeme-top.firebasestorage.app",
-messagingSenderId:"867981206214",
-appId:"1:867981206214:web:f6f250b1832978ef302dc7"
-});
-
+const app=initializeApp({apiKey:"AIzaSyBPYZjjzZk8oXweMXLjGN9-H9uTnW4vgWY",authDomain:"makeme-top.firebaseapp.com",projectId:"makeme-top",storageBucket:"makeme-top.firebasestorage.app",messagingSenderId:"867981206214",appId:"1:867981206214:web:f6f250b1832978ef302dc7"});
 const db=getFirestore(app);
 
-function slugify(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').substring(0,50)}
+function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').substring(0,60)}
+function clean(t){return(t||'').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-function stars(r){const f=Math.floor(r),h=r-f>=0.5?1:0,e=5-f-h;return'⭐'.repeat(f)+'✨'.repeat(h)+'☆'.repeat(e)}
-
-window.generate=async function(){
-const btn=document.getElementById('genBtn');
-const status=document.getElementById('status');
-const files=document.getElementById('files');
-
+window.gen=async function(){
+const btn=document.getElementById('btn');
+const st=document.getElementById('status');
+const fs=document.getElementById('files');
 btn.disabled=true;
-status.style.display='block';
-status.className='loading';
-status.textContent='⏳ Fetching businesses...';
-files.innerHTML='';
+st.style.display='block';
+st.className='loading';
+st.textContent='⏳ Loading...';
+fs.innerHTML='';
 
 try{
 const q=query(collection(db,'businesses'),where('status','==','approved'));
 const snap=await getDocs(q);
+if(snap.empty){st.className='error';st.textContent='❌ No businesses!';btn.disabled=false;return}
 
-if(snap.empty){
-status.className='error';
-status.textContent='❌ No businesses found!';
-btn.disabled=false;
-return;
-}
-
-const bizList=[];
-snap.forEach(doc=>bizList.push({id:doc.id,...doc.data()}));
-
-status.textContent=`✅ Found ${bizList.length} businesses! Generating...`;
+const bs=[];
+snap.forEach(d=>bs.push({id:d.id,...d.data()}));
+st.textContent='✅ Found '+bs.length+' businesses! Generating...';
 
 const generated=[];
 
-bizList.forEach(biz=>{
-const name=biz.name||'Business';
-const type=biz.type||'Business';
-const desc=biz.description||'';
-const addr=biz.address||'Kashmir';
-const phone=biz.phone||'';
-const web=biz.website||'#';
-const rating=biz.rating||0;
-const reviews=biz.review_count||0;
-const cover=biz.cover_url||'https://makemetop.in/icon-512.png';
-const premium=biz.is_premium?'⭐ VERIFIED PREMIUM':'✓ Verified MBP';
-const slug=slugify(name);
-const starDisplay=stars(rating);
-const whatsapp=(phone||'').replace(/[^\d+]/g,'');
+bs.forEach(b=>{
+const name=b.name||'Business';
+const type=b.type||'Business';
+const desc=b.description||'';
+const addr=b.address||'Kashmir';
+const phone=b.phone||'';
+const web=b.website||'';
+const rating=b.rating||0;
+const reviews=b.review_count||0;
+const cover=b.cover_url||'';
+const services=b.services||[];
+const gallery=b.gallery_urls||[];
+const premium=b.is_premium;
+const s=slug(name);
 
-let html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>';
-html+='<title>'+name+' - '+type+' | MakeMe Top</title>';
-html+='<meta name="description" content="'+desc.substring(0,150)+'"/>';
-html+='<meta name="robots" content="index,follow"/>';
-html+='<link rel="canonical" href="https://makemetop.in/'+slug+'.html"/>';
-html+='<style>*{margin:0;padding:0;box-sizing:border-box}';
+let stars='';
+for(let i=0;i<5;i++){stars+=i<Math.floor(rating)?'⭐':'☆';}
+
+let html='<!DOCTYPE html><html><head><meta charset="UTF-8"/>';
+html+='<meta name="viewport" content="width=device-width,initial-scale=1.0"/>';
+html+='<title>'+clean(name)+' - '+clean(type)+' | MakeMe Top</title>';
+html+='<meta name="description" content="'+clean(desc.substring(0,150))+'"/>';
+html+='<link rel="canonical" href="https://makemetop.in/'+s+'.html"/>';
+html+='<style>';
+html+='*{margin:0;padding:0;box-sizing:border-box}';
 html+='body{font-family:Arial,sans-serif;line-height:1.6}';
-html+='.nav{background:#1F1F1F;padding:15px 20px;color:#fff}';
+html+='.nav{background:#1F1F1F;padding:15px 20px;color:#fff;position:sticky;top:0;z-index:100}';
 html+='.nav a{color:#F5A623;text-decoration:none;font-weight:bold;font-size:20px}';
 html+='.hero{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),url('+cover+');background-size:cover;background-position:center;color:#fff;padding:100px 20px;text-align:center;min-height:400px}';
 html+='.hero h1{font-size:2.5rem;margin-bottom:10px;text-shadow:0 2px 4px rgba(0,0,0,0.5)}';
-html+='.badge{background:#F5A623;color:#000;padding:5px 12px;border-radius:15px;font-size:12px;font-weight:bold;display:inline-block;margin-bottom:10px}';
+html+='.badge{background:#F5A623;color:#000;padding:5px 15px;border-radius:20px;font-size:12px;font-weight:bold;display:inline-block;margin-bottom:10px}';
 html+='.rating{font-size:20px;margin:15px 0}.stars{color:#FCD34D}';
+html+='.verified{background:#16A34A;color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;margin-left:8px}';
 html+='.actions{background:#f5f5f5;padding:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}';
-html+='.btn{background:#F5A623;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;font-weight:bold;display:inline-block}';
+html+='.btn{background:#F5A623;color:#fff;padding:14px 24px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block}';
 html+='.btn:hover{background:#E09617}';
 html+='.content{max-width:1000px;margin:0 auto;padding:40px 20px}';
-html+='.section{margin-bottom:30px}';
-html+='.section h2{font-size:24px;margin-bottom:15px;color:#1F1F1F}';
-html+='footer{background:#f5f5f5;padding:20px;text-align:center;color:#666;font-size:14px}';
-html+='@media(max-width:768px){.hero h1{font-size:1.8rem}.actions{flex-direction:column}}</style></head><body>';
+html+='.section{margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #e5e7eb}';
+html+='.section h2{font-size:22px;margin-bottom:15px;color:#1F1F1F;font-weight:bold}';
+html+='.services{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}';
+html+='.tag{background:#f3f4f6;padding:8px 14px;border-radius:20px;font-size:14px}';
+html+='.detail{background:#f9fafb;padding:12px;margin:8px 0;border-radius:8px}';
+html+='.detail-label{font-size:12px;color:#6b7280;margin-bottom:4px}';
+html+='.detail-value{font-weight:600;color:#1f1f1f}';
+html+='.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:15px}';
+html+='.gallery img{width:100%;height:200px;object-fit:cover;border-radius:10px}';
+html+='footer{background:#f3f4f6;padding:20px;text-align:center;color:#666;font-size:14px}';
+html+='footer a{color:#6b7280;margin:0 8px}';
+html+='@media(max-width:768px){.hero h1{font-size:1.8rem}.actions{flex-direction:column}}';
+html+='</style></head><body>';
 
-html+='<div class="nav"><a href="/">MakeMe<span style="color:#F5A623">Top</span></a> | <a href="/" style="font-size:14px;color:#999">← Back</a></div>';
+html+='<div class="nav"><a href="/">MakeMe<span style="color:#F5A623">Top</span></a></div>';
 
-html+='<div class="hero"><div><div class="badge">'+premium+'</div><h1>'+name+'</h1><p style="font-size:18px">'+type+'</p>';
-html+='<div class="rating"><span class="stars">'+starDisplay+'</span> <span>'+rating.toFixed(1)+' · '+reviews+' reviews</span></div></div></div>';
+html+='<div class="hero"><div>';
+html+='<div class="badge">'+(premium?'⭐ VERIFIED PREMIUM':'✓ Verified MBP')+'</div>';
+html+='<h1>'+clean(name)+'</h1>';
+html+='<p style="font-size:18px;margin-bottom:10px">'+clean(type)+'</p>';
+html+='<div class="rating"><span class="stars">'+stars+'</span> <span>'+rating.toFixed(1)+' · '+reviews+' reviews</span><span class="verified">✓ Verified MBP</span></div>';
+html+='</div></div>';
 
 html+='<div class="actions">';
 html+='<a href="tel:'+phone+'" class="btn">📞 Call Now</a>';
-html+='<a href="https://wa.me/'+whatsapp+'" class="btn">💬 WhatsApp</a>';
-html+='<a href="'+(web.startsWith('http')?web:'https://'+web)+'" class="btn">🌐 Website</a>';
+html+='<a href="https://wa.me/'+phone.replace(/[^\d+]/g,'')+'" class="btn">💬 WhatsApp</a>';
+if(web)html+='<a href="'+web+'" class="btn">🌐 Website</a>';
 html+='<a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr)+'" class="btn">📍 Directions</a>';
 html+='</div>';
 
 html+='<div class="content">';
-html+='<div class="section"><h2>About</h2><p>'+desc+'</p></div>';
-html+='<div class="section"><p style="text-align:center;color:#666">Verified listing on <a href="/" style="color:#F5A623;font-weight:bold">MakeMe Top MBP</a></p></div>';
+
+html+='<div class="section"><h2>About</h2><p>'+clean(desc)+'</p></div>';
+
+if(services.length){
+html+='<div class="section"><h2>Services</h2><div class="services">';
+services.forEach(sv=>html+='<span class="tag">'+clean(sv)+'</span>');
+html+='</div></div>';
+}
+
+html+='<div class="section"><h2>Details</h2>';
+html+='<div class="detail"><div class="detail-label">Address</div><div class="detail-value">'+clean(addr)+'</div></div>';
+html+='<div class="detail"><div class="detail-label">Phone</div><div class="detail-value">'+phone+'</div></div>';
+html+='<div class="detail"><div class="detail-label">Business Type</div><div class="detail-value">'+clean(type)+'</div></div>';
 html+='</div>';
 
-html+='<footer><strong>MakeMe Top</strong> · makemetop.in<br><a href="/">Home</a> · <a href="about.html">About</a> · <a href="privacy.html">Privacy</a></footer>';
-html+='</body></html>';
+if(gallery.length){
+html+='<div class="section"><h2>Photos</h2><div class="gallery">';
+gallery.forEach(img=>html+='<img src="'+img+'" alt="'+clean(name)+'">');
+html+='</div></div>';
+}
 
-generated.push({name:slug+'.html',content:html,label:name});
+html+='<div class="section"><h2>Customer Reviews</h2>';
+html+='<p style="text-align:center;color:#666;padding:30px">';
+if(reviews>0){
+html+='★ '+rating.toFixed(1)+' out of 5 stars based on '+reviews+' reviews';
+}else{
+html+='No reviews yet. Be the first to review!';
+}
+html+='</p></div>';
+
+html+='<p style="text-align:center;color:#666;margin-top:30px">';
+html+='Verified listing on <a href="/" style="color:#F5A623;font-weight:600">MakeMe Top MBP</a><br><br>';
+html+='<a href="/" class="btn">Browse More Businesses →</a>';
+html+='</p>';
+
+html+='</div>';
+
+html+='<footer><strong>MakeMe Top</strong> · makemetop.in<br>';
+html+='<a href="/">Home</a> <a href="about.html">About</a> <a href="privacy.html">Privacy</a>';
+html+='</footer></body></html>';
+
+generated.push({name:s+'.html',content:html,label:name});
 });
 
-// Sitemap
 let sitemap='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 sitemap+='<url><loc>https://makemetop.in/</loc><priority>1.0</priority></url>';
 generated.forEach(f=>sitemap+='<url><loc>https://makemetop.in/'+f.name+'</loc><priority>0.8</priority></url>');
 sitemap+='</urlset>';
 generated.push({name:'sitemap.xml',content:sitemap,label:'Sitemap'});
 
-status.className='success';
-status.textContent='🎉 Success! Generated '+generated.length+' files';
+st.className='success';
+st.textContent='🎉 SUCCESS! Generated '+generated.length+' files';
 
-files.innerHTML='<h3>📥 Download Files:</h3>';
+fs.innerHTML='<h3>📥 Download Files:</h3>';
 generated.forEach(f=>{
 const blob=new Blob([f.content],{type:'text/html'});
 const url=URL.createObjectURL(blob);
 const div=document.createElement('div');
 div.className='file-item';
-div.innerHTML='<span><strong>'+f.name+'</strong> ('+f.label+')</span><a href="'+url+'" download="'+f.name+'" class="download-link">⬇️ Download</a>';
-files.appendChild(div);
+div.innerHTML='<span><strong>'+f.name+'</strong> ('+f.label+')</span><a href="'+url+'" download="'+f.name+'" class="download">⬇️ Download</a>';
+fs.appendChild(div);
 });
 
 btn.disabled=false;
 
 }catch(err){
-status.className='error';
-status.textContent='❌ Error: '+err.message;
+st.className='error';
+st.textContent='❌ '+err.message;
 btn.disabled=false;
 }
 };
