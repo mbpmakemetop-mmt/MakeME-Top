@@ -1,376 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MBP Business Page Generator - No Python Required!</title>
+<title>MBP Generator - Working Version</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;padding:20px}
-.container{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:32px}
-h1{color:#1F1F1F;margin-bottom:8px;font-size:1.8rem}
-.subtitle{color:#6B7280;margin-bottom:24px;font-size:1.05rem}
-.section{margin-bottom:32px;padding:20px;background:#F9FAFB;border-radius:8px;border-left:4px solid #F5A623}
-.section h2{font-size:1.2rem;margin-bottom:12px;color:#1F1F1F}
-.step{background:#fff;padding:16px;margin-bottom:12px;border-radius:6px;border:1px solid #E5E7EB}
-.step-num{display:inline-block;background:#F5A623;color:#fff;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;font-weight:700;margin-right:10px}
-.btn{background:#F5A623;color:#fff;border:none;padding:14px 28px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s}
-.btn:hover{background:#E09617;transform:translateY(-2px)}
-.btn:disabled{background:#D1D5DB;cursor:not-allowed;transform:none}
-#status{margin-top:20px;padding:16px;border-radius:8px;display:none}
-.success{background:#ECFDF5;border:2px solid #10B981;color:#065F46}
-.error{background:#FEF2F2;border:2px solid #EF4444;color:#991B1B}
-.loading{background:#DBEAFE;border:2px solid #3B82F6;color:#1E40AF}
-#output{margin-top:24px;display:none}
-.file-item{background:#fff;padding:12px 16px;margin-bottom:8px;border-radius:6px;border:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center}
-.download-btn{background:#10B981;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:.9rem;font-weight:600}
-.download-btn:hover{background:#059669}
-code{background:#F3F4F6;padding:2px 6px;border-radius:4px;font-family:'Courier New',monospace;font-size:.9rem}
-.warning{background:#FEF3C7;border-left:4px solid #F59E0B;padding:12px 16px;border-radius:4px;color:#92400E;margin-bottom:16px}
+body{font-family:Arial,sans-serif;max-width:800px;margin:50px auto;padding:20px;background:#f5f5f5}
+.card{background:#fff;padding:30px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+h1{color:#1F1F1F;margin-bottom:10px}
+.btn{background:#F5A623;color:#fff;border:none;padding:15px 30px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold}
+.btn:hover{background:#E09617}
+.btn:disabled{background:#ccc;cursor:not-allowed}
+#status{margin-top:20px;padding:15px;border-radius:5px;display:none}
+.success{background:#d4edda;border:1px solid #28a745;color:#155724}
+.error{background:#f8d7da;border:1px solid #dc3545;color:#721c24}
+.loading{background:#d1ecf1;border:1px solid #17a2b8;color:#0c5460}
+.file-list{margin-top:20px}
+.file-item{background:#f8f9fa;padding:10px;margin:5px 0;border-radius:5px;display:flex;justify-content:space-between;align-items:center}
+.download-link{background:#28a745;color:#fff;padding:8px 15px;text-decoration:none;border-radius:4px;font-size:14px}
+.download-link:hover{background:#218838}
 </style>
 </head>
 <body>
 
-<div class="container">
+<div class="card">
 <h1>🚀 MBP Business Page Generator</h1>
-<div class="subtitle">Generate individual HTML pages for all your businesses - runs in your browser, no installation needed!</div>
-
-<div class="section">
-<h2>📋 How It Works</h2>
-<div class="step">
-<span class="step-num">1</span>
-<strong>Click the button below</strong> - the script will connect to your Firestore and fetch all approved businesses
-</div>
-<div class="step">
-<span class="step-num">2</span>
-<strong>Wait 5-10 seconds</strong> - it will generate individual HTML files for each business
-</div>
-<div class="step">
-<span class="step-num">3</span>
-<strong>Download files</strong> - click download buttons to save each business page
-</div>
-<div class="step">
-<span class="step-num">4</span>
-<strong>Upload to website</strong> - put all downloaded files in your website root folder
-</div>
-</div>
-
-<div class="warning">
-⚠️ <strong>Important:</strong> Make sure you're signed in to your Firebase account in this browser before clicking generate!
-</div>
-
-<button class="btn" id="generateBtn" onclick="generatePages()">
-🎯 Generate Business Pages Now
-</button>
-
+<p>Click the button to generate individual HTML pages for all your businesses.</p>
+<br>
+<button class="btn" id="genBtn" onclick="generate()">Generate Pages Now</button>
 <div id="status"></div>
-<div id="output"></div>
-
+<div id="files"></div>
 </div>
 
 <script type="module">
-// ═══════════════════════════════════════════════════════════
-// FIREBASE CONFIGURATION
-// ═══════════════════════════════════════════════════════════
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import{getFirestore,collection,getDocs,query,where}from'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-import { getFirestore, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+const app=initializeApp({
+apiKey:"AIzaSyBPYZjjzZk8oXweMXLjGN9-H9uTnW4vgWY",
+authDomain:"makeme-top.firebaseapp.com",
+projectId:"makeme-top",
+storageBucket:"makeme-top.firebasestorage.app",
+messagingSenderId:"867981206214",
+appId:"1:867981206214:web:f6f250b1832978ef302dc7"
+});
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBPYZjjzZk8oXweMXLjGN9-H9uTnW4vgWY",
-  authDomain: "makeme-top.firebaseapp.com",
-  projectId: "makeme-top",
-  storageBucket: "makeme-top.firebasestorage.app",
-  messagingSenderId: "867981206214",
-  appId: "1:867981206214:web:f6f250b1832978ef302dc7"
+const db=getFirestore(app);
+
+function slugify(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').substring(0,50)}
+
+function stars(r){const f=Math.floor(r),h=r-f>=0.5?1:0,e=5-f-h;return'⭐'.repeat(f)+'✨'.repeat(h)+'☆'.repeat(e)}
+
+window.generate=async function(){
+const btn=document.getElementById('genBtn');
+const status=document.getElementById('status');
+const files=document.getElementById('files');
+
+btn.disabled=true;
+status.style.display='block';
+status.className='loading';
+status.textContent='⏳ Fetching businesses...';
+files.innerHTML='';
+
+try{
+const q=query(collection(db,'businesses'),where('status','==','approved'));
+const snap=await getDocs(q);
+
+if(snap.empty){
+status.className='error';
+status.textContent='❌ No businesses found!';
+btn.disabled=false;
+return;
+}
+
+const bizList=[];
+snap.forEach(doc=>bizList.push({id:doc.id,...doc.data()}));
+
+status.textContent=`✅ Found ${bizList.length} businesses! Generating...`;
+
+const generated=[];
+
+bizList.forEach(biz=>{
+const name=biz.name||'Business';
+const type=biz.type||'Business';
+const desc=biz.description||'';
+const addr=biz.address||'Kashmir';
+const phone=biz.phone||'';
+const web=biz.website||'#';
+const rating=biz.rating||0;
+const reviews=biz.review_count||0;
+const cover=biz.cover_url||'https://makemetop.in/icon-512.png';
+const premium=biz.is_premium?'⭐ VERIFIED PREMIUM':'✓ Verified MBP';
+const slug=slugify(name);
+const starDisplay=stars(rating);
+const whatsapp=(phone||'').replace(/[^\d+]/g,'');
+
+let html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>';
+html+='<title>'+name+' - '+type+' | MakeMe Top</title>';
+html+='<meta name="description" content="'+desc.substring(0,150)+'"/>';
+html+='<meta name="robots" content="index,follow"/>';
+html+='<link rel="canonical" href="https://makemetop.in/'+slug+'.html"/>';
+html+='<style>*{margin:0;padding:0;box-sizing:border-box}';
+html+='body{font-family:Arial,sans-serif;line-height:1.6}';
+html+='.nav{background:#1F1F1F;padding:15px 20px;color:#fff}';
+html+='.nav a{color:#F5A623;text-decoration:none;font-weight:bold;font-size:20px}';
+html+='.hero{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.6)),url('+cover+');background-size:cover;background-position:center;color:#fff;padding:100px 20px;text-align:center;min-height:400px}';
+html+='.hero h1{font-size:2.5rem;margin-bottom:10px;text-shadow:0 2px 4px rgba(0,0,0,0.5)}';
+html+='.badge{background:#F5A623;color:#000;padding:5px 12px;border-radius:15px;font-size:12px;font-weight:bold;display:inline-block;margin-bottom:10px}';
+html+='.rating{font-size:20px;margin:15px 0}.stars{color:#FCD34D}';
+html+='.actions{background:#f5f5f5;padding:20px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}';
+html+='.btn{background:#F5A623;color:#fff;padding:12px 24px;text-decoration:none;border-radius:5px;font-weight:bold;display:inline-block}';
+html+='.btn:hover{background:#E09617}';
+html+='.content{max-width:1000px;margin:0 auto;padding:40px 20px}';
+html+='.section{margin-bottom:30px}';
+html+='.section h2{font-size:24px;margin-bottom:15px;color:#1F1F1F}';
+html+='footer{background:#f5f5f5;padding:20px;text-align:center;color:#666;font-size:14px}';
+html+='@media(max-width:768px){.hero h1{font-size:1.8rem}.actions{flex-direction:column}}</style></head><body>';
+
+html+='<div class="nav"><a href="/">MakeMe<span style="color:#F5A623">Top</span></a> | <a href="/" style="font-size:14px;color:#999">← Back</a></div>';
+
+html+='<div class="hero"><div><div class="badge">'+premium+'</div><h1>'+name+'</h1><p style="font-size:18px">'+type+'</p>';
+html+='<div class="rating"><span class="stars">'+starDisplay+'</span> <span>'+rating.toFixed(1)+' · '+reviews+' reviews</span></div></div></div>';
+
+html+='<div class="actions">';
+html+='<a href="tel:'+phone+'" class="btn">📞 Call Now</a>';
+html+='<a href="https://wa.me/'+whatsapp+'" class="btn">💬 WhatsApp</a>';
+html+='<a href="'+(web.startsWith('http')?web:'https://'+web)+'" class="btn">🌐 Website</a>';
+html+='<a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr)+'" class="btn">📍 Directions</a>';
+html+='</div>';
+
+html+='<div class="content">';
+html+='<div class="section"><h2>About</h2><p>'+desc+'</p></div>';
+html+='<div class="section"><p style="text-align:center;color:#666">Verified listing on <a href="/" style="color:#F5A623;font-weight:bold">MakeMe Top MBP</a></p></div>';
+html+='</div>';
+
+html+='<footer><strong>MakeMe Top</strong> · makemetop.in<br><a href="/">Home</a> · <a href="about.html">About</a> · <a href="privacy.html">Privacy</a></footer>';
+html+='</body></html>';
+
+generated.push({name:slug+'.html',content:html,label:name});
+});
+
+// Sitemap
+let sitemap='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+sitemap+='<url><loc>https://makemetop.in/</loc><priority>1.0</priority></url>';
+generated.forEach(f=>sitemap+='<url><loc>https://makemetop.in/'+f.name+'</loc><priority>0.8</priority></url>');
+sitemap+='</urlset>';
+generated.push({name:'sitemap.xml',content:sitemap,label:'Sitemap'});
+
+status.className='success';
+status.textContent='🎉 Success! Generated '+generated.length+' files';
+
+files.innerHTML='<h3>📥 Download Files:</h3>';
+generated.forEach(f=>{
+const blob=new Blob([f.content],{type:'text/html'});
+const url=URL.createObjectURL(blob);
+const div=document.createElement('div');
+div.className='file-item';
+div.innerHTML='<span><strong>'+f.name+'</strong> ('+f.label+')</span><a href="'+url+'" download="'+f.name+'" class="download-link">⬇️ Download</a>';
+files.appendChild(div);
+});
+
+btn.disabled=false;
+
+}catch(err){
+status.className='error';
+status.textContent='❌ Error: '+err.message;
+btn.disabled=false;
+}
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ═══════════════════════════════════════════════════════════
-// HELPER FUNCTIONS
-// ═══════════════════════════════════════════════════════════
-
-function slugify(text) {
-  return text.toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .substring(0, 50);
-}
-
-function generateStars(rating) {
-  const full = Math.floor(rating);
-  const half = rating - full >= 0.5 ? 1 : 0;
-  const empty = 5 - full - half;
-  return '⭐'.repeat(full) + '✨'.repeat(half) + '☆'.repeat(empty);
-}
-
-function cleanPhone(phone) {
-  return phone ? phone.replace(/[^\d+]/g, '') : '';
-}
-
-function truncate(text, length = 150) {
-  if (!text || text.length <= length) return text || '';
-  return text.substring(0, length).split(' ').slice(0, -1).join(' ') + '...';
-}
-
-function urlEncode(text) {
-  return encodeURIComponent(text || '');
-}
-
-// ═══════════════════════════════════════════════════════════
-// HTML TEMPLATE
-// ═══════════════════════════════════════════════════════════
-
-function generateBusinessHTML(business) {
-  const name = business.name || 'Business';
-  const type = business.type || 'Business';
-  const description = business.description || '';
-  const address = business.address || 'Kashmir, India';
-  const phone = business.phone || '';
-  const website = business.website || '#';
-  const rating = business.rating || 0;
-  const reviewCount = business.review_count || 0;
-  const isPremium = business.is_premium || false;
-  const coverImage = business.cover_url || 'https://makemetop.in/icon-512.png';
-  const services = business.services || [];
-  
-  const slug = slugify(name);
-  const metaDesc = truncate(description, 150);
-  const stars = generateStars(rating);
-  const badge = isPremium ? '⭐ VERIFIED PREMIUM' : '✓ Verified MBP';
-  const whatsappClean = cleanPhone(phone);
-  const websiteUrl = website.startsWith('http') ? website : `https://${website}`;
-  
-  let servicesHTML = '';
-  if (services.length > 0) {
-    const serviceTags = services.slice(0, 15).map(s => 
-      `<span class="service-tag">${s}</span>`
-    ).join('');
-    servicesHTML = `
-<div class="section">
-  <h2>Services</h2>
-  <div class="services">${serviceTags}</div>
-</div>`;
-  }
-  
-  return `<!DOCTYPE html>
-<html lang="en-IN">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#1F1F1F"/>
-<title>${name} – ${type} | MakeMe Top MBP Kashmir</title>
-<meta name="description" content="${metaDesc}"/>
-<meta name="robots" content="index, follow"/>
-<link rel="canonical" href="https://makemetop.in/${slug}.html"/>
-<link rel="icon" href="icon-192.png"/>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "${name}",
-  "image": "${coverImage}",
-  "description": "${description.replace(/"/g, '\\"')}",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "${address}",
-    "addressLocality": "Srinagar",
-    "addressRegion": "Jammu and Kashmir",
-    "addressCountry": "IN"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "${rating.toFixed(1)}",
-    "reviewCount": "${reviewCount}"
-  }
-}
-</script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#1F1F1F;--accent:#F5A623;--bg:#fff;--gray50:#F9FAFB;--gray100:#F3F4F6;--gray200:#E5E7EB;--gray500:#6B7280;--gray700:#374151}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--primary);line-height:1.6}
-.container{max-width:1200px;margin:0 auto;padding:0 20px}
-nav{background:var(--primary);padding:14px 20px;position:sticky;top:0;z-index:100}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:#fff;text-decoration:none}
-.nav-logo span{color:var(--accent)}
-.hero{background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.5)),url('${coverImage}');background-size:cover;background-position:center;color:#fff;padding:80px 20px 60px;text-align:center;min-height:400px;display:flex;align-items:center;justify-content:center}
-.badge{display:inline-block;background:#F5A623;color:#1F1F1F;padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:700;margin-bottom:12px;text-transform:uppercase}
-.hero h1{font-size:2.5rem;font-weight:800;margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
-.hero-type{font-size:1.1rem;opacity:.95;margin-bottom:16px}
-.rating{font-size:1.2rem;margin:16px 0}
-.rating-stars{color:#FCD34D}
-.actions{background:var(--gray50);padding:20px}
-.actions-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.btn{display:block;background:#fff;border:2px solid var(--gray200);padding:14px 20px;border-radius:8px;text-align:center;text-decoration:none;color:var(--primary);font-weight:600}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.content{padding:40px 20px}
-.section{margin-bottom:40px}
-.section h2{font-size:1.5rem;font-weight:700;margin-bottom:16px}
-.description{color:var(--gray700);font-size:1.05rem;line-height:1.8}
-.services{display:flex;flex-wrap:wrap;gap:8px}
-.service-tag{background:var(--gray100);padding:8px 16px;border-radius:20px;font-size:.9rem}
-footer{background:var(--gray50);padding:24px;text-align:center;color:var(--gray500);font-size:.85rem}
-@media (max-width:768px){.hero h1{font-size:1.8rem}}
-</style>
-</head>
-<body>
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">MakeMe<span>Top</span></a>
-    <a href="/" style="color:rgba(255,255,255,.7);font-size:.9rem;text-decoration:none">← Browse All</a>
-  </div>
-</nav>
-<div class="hero">
-  <div>
-    <div class="badge">${badge}</div>
-    <h1>${name}</h1>
-    <div class="hero-type">${type}</div>
-    <div class="rating">
-      <span class="rating-stars">${stars}</span>
-      <span>${rating.toFixed(1)} · ${reviewCount} reviews</span>
-    </div>
-  </div>
-</div>
-<div class="actions">
-  <div class="actions-inner">
-    <a href="tel:${phone}" class="btn btn-primary">📞 Call Now</a>
-    <a href="https://wa.me/${whatsappClean}" class="btn">💬 WhatsApp</a>
-    <a href="${websiteUrl}" class="btn" target="_blank">🌐 Website</a>
-    <a href="https://www.google.com/maps/search/?api=1&query=${urlEncode(address)}" class="btn" target="_blank">📍 Directions</a>
-  </div>
-</div>
-<main>
-<div class="container">
-<div class="content">
-<div class="section">
-  <h2>About</h2>
-  <div class="description">${description}</div>
-</div>
-${servicesHTML}
-<div class="section">
-  <p style="text-align:center;color:var(--gray500)">
-    Verified listing on <a href="/" style="color:var(--accent);font-weight:600">MakeMe Top MBP</a><br><br>
-    <a href="/" class="btn btn-primary" style="display:inline-block">Browse More Businesses →</a>
-  </p>
-</div>
-</div>
-</div>
-</main>
-<footer>
-  <div><strong>MakeMe Top</strong> · makemetop.in</div>
-  <div style="margin-top:8px">
-    <a href="/">Home</a> · <a href="about.html">About</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
-  </div>
-</footer>
-</body>
-</html>`;
-}
-
-// ═══════════════════════════════════════════════════════════
-// MAIN GENERATION FUNCTION
-// ═══════════════════════════════════════════════════════════
-
-window.generatePages = async function() {
-  const btn = document.getElementById('generateBtn');
-  const status = document.getElementById('status');
-  const output = document.getElementById('output');
-  
-  btn.disabled = true;
-  status.style.display = 'block';
-  status.className = 'loading';
-  status.innerHTML = '⏳ Connecting to Firestore and fetching businesses...';
-  output.style.display = 'none';
-  
-  try {
-    // Fetch approved businesses
-    const q = query(collection(db, 'businesses'), where('status', '==', 'approved'));
-    const snapshot = await getDocs(q);
-    
-    if (snapshot.empty) {
-      status.className = 'error';
-      status.innerHTML = '❌ No approved businesses found in Firestore!';
-      btn.disabled = false;
-      return;
-    }
-    
-    const businesses = [];
-    snapshot.forEach(doc => {
-      businesses.push({ id: doc.id, ...doc.data() });
-    });
-    
-    status.innerHTML = `✅ Found ${businesses.length} businesses! Generating HTML files...`;
-    
-    // Generate HTML files
-    const files = [];
-    for (const biz of businesses) {
-      const slug = slugify(biz.name || 'business');
-      const html = generateBusinessHTML(biz);
-      files.push({
-        name: `${slug}.html`,
-        content: html,
-        businessName: biz.name
-      });
-    }
-    
-    // Generate sitemap
-    const sitemap = generateSitemap(files.map(f => f.name));
-    files.push({
-      name: 'sitemap.xml',
-      content: sitemap,
-      businessName: 'Sitemap'
-    });
-    
-    // Display success
-    status.className = 'success';
-    status.innerHTML = `🎉 Success! Generated ${files.length} files (${businesses.length} businesses + sitemap)`;
-    
-    // Show download buttons
-    output.style.display = 'block';
-    output.innerHTML = '<h3 style="margin-bottom:16px">📥 Download Files:</h3>';
-    
-    files.forEach(file => {
-      const blob = new Blob([file.content], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      
-      const item = document.createElement('div');
-      item.className = 'file-item';
-      item.innerHTML = `
-        <span><strong>${file.name}</strong> ${file.businessName !== 'Sitemap' ? `(${file.businessName})` : ''}</span>
-        <a href="${url}" download="${file.name}" class="download-btn">⬇️ Download</a>
-      `;
-      output.appendChild(item);
-    });
-    
-    btn.disabled = false;
-    
-  } catch (error) {
-    status.className = 'error';
-    status.innerHTML = `❌ Error: ${error.message}<br><br>Make sure you're signed in to Firebase in this browser!`;
-    btn.disabled = false;
-  }
-};
-
-function generateSitemap(businessFiles) {
-  let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://makemetop.in/</loc><priority>1.0</priority></url>
-  <url><loc>https://makemetop.in/about.html</loc><priority>0.5</priority></url>
-  <url><loc>https://makemetop.in/gulmarg-guide.html</loc><priority>0.7</priority></url>
-  <url><loc>https://makemetop.in/dal-lake-guide.html</loc><priority>0.7</priority></url>
-  <url><loc>https://makemetop.in/pahalgam-guide.html</loc><priority>0.7</priority></url>
-`;
-  
-  businessFiles.forEach(file => {
-    xml += `  <url><loc>https://makemetop.in/${file}</loc><priority>0.8</priority></url>\n`;
-  });
-  
-  xml += '</urlset>';
-  return xml;
-}
-
 </script>
 
 </body>
