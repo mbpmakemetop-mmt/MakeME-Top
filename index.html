@@ -201,9 +201,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 
 <!-- Main CSS preload -->
-<link rel="preload" href="shared.css?v=4" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="shared.css?v=4.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript>
-  <link rel="stylesheet" href="shared.css?v=4">
+  <link rel="stylesheet" href="shared.css?v=4.1">
 </noscript>
 
 
@@ -2490,6 +2490,23 @@ async function adminVerifyPayment(paymentId, bizId, action) {
 const MAX_IMG_MB = 5;
 function previewImg(input, boxId, previewId) {
   const file = input.files[0]; if (!file) return;
+  
+  // SECURITY: File size limit - max 5MB per image
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+  if (file.size > MAX_FILE_SIZE) {
+    showToast('⚠️ Image too large! Maximum size is 5MB. Please compress and try again.');
+    input.value = ''; // Clear the input
+    return;
+  }
+  
+  // SECURITY: File type validation - only images allowed
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(file.type.toLowerCase())) {
+    showToast('⚠️ Invalid file type! Only JPG, PNG, GIF, and WebP images are allowed.');
+    input.value = '';
+    return;
+  }
+  
   const prev = document.getElementById(previewId);
   prev.src = URL.createObjectURL(file); prev.classList.remove('hidden');
   const box = document.getElementById(boxId);
@@ -2499,6 +2516,23 @@ function previewImg(input, boxId, previewId) {
 }
 function previewGal(input, idx) {
   const file = input.files[0]; if (!file) return;
+  
+  // SECURITY: File size limit - max 5MB per image
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+  if (file.size > MAX_FILE_SIZE) {
+    showToast('⚠️ Image too large! Maximum size is 5MB. Please compress and try again.');
+    input.value = '';
+    return;
+  }
+  
+  // SECURITY: File type validation - only images allowed
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(file.type.toLowerCase())) {
+    showToast('⚠️ Invalid file type! Only JPG, PNG, GIF, and WebP images are allowed.');
+    input.value = '';
+    return;
+  }
+  
   galleryFiles[idx] = file;
   const prev = document.getElementById('gal-prev-'+idx);
   prev.src = URL.createObjectURL(file); prev.classList.remove('hidden');
@@ -3826,12 +3860,23 @@ function rateLimit(key, maxPerMinute = 5) {
 // Deep sanitization for all user inputs before writing to Firestore
 function sanitizeInput(str, maxLen = 500) {
   if (!str) return '';
-  // Strip HTML tags, trim, limit length
+  // SECURITY: Enhanced XSS protection
   return String(str)
-    .replace(/<[^>]*>/g, '')       // strip HTML
-    .replace(/javascript:/gi, '')  // strip JS proto
-    .replace(/on\w+=/gi, '')       // strip event handlers
-    .replace(/data:/gi, '')        // strip data URIs
+    .replace(/&/g, '&amp;')           // Encode ampersands first
+    .replace(/</g, '&lt;')            // Encode less-than
+    .replace(/>/g, '&gt;')            // Encode greater-than
+    .replace(/"/g, '&quot;')          // Encode double quotes
+    .replace(/'/g, '&#x27;')          // Encode single quotes
+    .replace(/\//g, '&#x2F;')         // Encode forward slash
+    .replace(/<[^>]*>/g, '')          // Strip any remaining HTML tags
+    .replace(/javascript:/gi, '')     // Strip JavaScript protocol
+    .replace(/on\w+\s*=/gi, '')       // Strip event handlers (onclick, onerror, etc.)
+    .replace(/data:/gi, '')           // Strip data URIs
+    .replace(/vbscript:/gi, '')       // Strip VBScript
+    .replace(/file:/gi, '')           // Strip file protocol
+    .replace(/<!--.*?-->/g, '')       // Strip HTML comments
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '') // Strip script tags
+    .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '') // Strip iframes
     .trim()
     .slice(0, maxLen);
 }
