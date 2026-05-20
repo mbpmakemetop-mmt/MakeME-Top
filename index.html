@@ -3658,7 +3658,13 @@ async function sendContactMsg() {
 // ══════════════════════════════════════
 //  MODALS / LIGHTBOX / FAQ
 // ══════════════════════════════════════
-function openModal(id) { document.getElementById(id).classList.add('open'); }
+function openModal(id) { 
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  // Force display first, then add class for smooth transition
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('open'), 10);
+}
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function openLightbox(src) { document.getElementById('lightbox-img').src=src; openModal('modal-lightbox'); }
 function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
