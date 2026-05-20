@@ -1,1 +1,152 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://makemetop.in/</loc><priority>1.0</priority></url><url><loc>https://makemetop.in/triporbit-tour-and-travel.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/vellfire-holidays.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/sunway-kashmir.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/lake-house-palace.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/kashmir-hosts.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/kashmir-glide-tour-and-travel.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/olympias-athena.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/havenly-horizon-tours.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/aadi-tour-travel.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/hotel-dal-nights.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/kashmir-sinthantoptour-travel.html</loc><priority>0.8</priority></url><url><loc>https://makemetop.in/sun-seekers.html</loc><priority>0.8</priority></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://makemetop.in/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://makemetop.in/about.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://makemetop.in/refund.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/terms.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/privacy.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/refund.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://makemetop.in/blog/gulmarg-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/blog/dal-lake-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/blog/pahalgam-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/blog/sinthan-top-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/blog/kashmir-skiing-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/blog/gurez-valley-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Business Pages -->
+  <url>
+    <loc>https://makemetop.in/triporbit-tour-and-travel.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/vellfire-holidays.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/sunway-kashmir.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/lake-house-palace.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/kashmir-hosts.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/kashmir-glide-tour-and-travel.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/olympias-athena.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/havenly-horizon-tours.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/aadi-tour-travel.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/hotel-dal-nights.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/kashmir-sinthantoptour-travel.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://makemetop.in/sun-seekers.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>
