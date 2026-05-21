@@ -2,8 +2,8 @@
   "name": "MBP – MakeMeTop Business Profile",
   "short_name": "MBP",
   "description": "MBP – MakeMeTop Business Profile. Srinagar's #1 local business directory for Jammu & Kashmir. Create your free MBP and rank on Google.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FFFFFF",
@@ -11,36 +11,32 @@
   "categories": ["business", "local", "lifestyle"],
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "./icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "./screenshot-mobile.png",
+      "src": "/screenshot-mobile.png",
       "sizes": "390x844",
       "type": "image/png",
-      "form_factor": "narrow"
+      "form_factor": "narrow",
+      "label": "MBP Home Screen"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MBP Dashboard"
     }
   ],
   "shortcuts": [
@@ -48,15 +44,27 @@
       "name": "Create MBP",
       "short_name": "Create",
       "description": "Create your MakeMeTop Business Profile",
-      "url": "./?action=add",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "url": "/?action=add",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Search MBPs",
       "short_name": "Search",
       "description": "Find local businesses in Srinagar J&K",
-      "url": "./?action=search",
-      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+      "url": "/?action=search",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
