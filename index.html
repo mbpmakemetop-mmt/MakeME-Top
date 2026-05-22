@@ -3114,8 +3114,9 @@ async function submitReview() {
   if (!currentBizData) return;
   const { addDoc, collection, serverTimestamp, doc, updateDoc, getDoc, getDocs, query: fsQ, where } = window._collections;
 
-  // Check 1 review per user per business
-  if (!editingReviewId) {
+  // Check 1 review per user per business (ADMIN BYPASS: admin can give unlimited reviews)
+  const isAdmin = window._currentUser?.email === 'abrarrtallks@gmail.com';
+  if (!editingReviewId && !isAdmin) {
     const existing = await getDocs(fsQ(collection(window._db,'reviews'), where('business_id','==',currentBizData.id), where('user_id','==',window._currentUser.uid)));
     if (!existing.empty) { showToast('⚠️ You already reviewed this business'); closeModal('modal-review'); return; }
   }
