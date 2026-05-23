@@ -363,92 +363,52 @@
     </button>
   </header>
   <div class="scroll-body">
-    <div class="home-hero">
-      <!-- SEO: Primary H1 – Kashmir Travel platform -->
-      <h1>Verified Travel Agencies<br/><span>&amp; Resorts in Kashmir</span> 🏔️</h1>
-      <p>MBP by MakeMe Top – Trusted travel listings for Srinagar, Gulmarg, Pahalgam, Sonamarg &amp; all of J&amp;K</p>
-
-      <!-- ══ ADVERTISEMENT BANNER SLIDER ══ -->
-      <div id="updates-slider-wrap" style="display:none">
-        <div id="updates-track"></div>
-        <div id="updates-dots"></div>
-      </div>
-
-      <div class="search-bar" id="home-search-bar" onclick="navTo('search')" role="search" aria-label="Search Kashmir travel agencies and resorts">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search travel agencies, resorts, tours…" readonly aria-label="Search Kashmir travel agencies"/>
+    <div class="home-hero" style="text-align:center;padding:48px 24px 56px;">
+      <!-- B2B FOCUSED HERO -->
+      <h1 style="font-size:2.2rem;margin-bottom:16px;">Create Your Kashmir <span>Business Profile</span></h1>
+      <p style="max-width:600px;margin:0 auto 32px;font-size:1.05rem;line-height:1.6;">List your travel agency, resort, or hotel on MakeMe Top. Reach thousands of tourists searching for Kashmir trips.</p>
+      
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+        <button class="btn" onclick="tryAddBusiness()" style="font-size:1rem;padding:14px 28px;min-width:180px;">🚀 Create Your MBP</button>
+        <button class="btn btn-outline" onclick="navTo('premium')" style="font-size:1rem;padding:14px 28px;min-width:180px;">View Pricing</button>
       </div>
     </div>
 
-    <!-- SEO: H2 section header -->
-    <div style="margin:8px 0 4px">
-      <div style="padding:0 16px;margin-bottom:8px">
-        <h2 class="section-title" style="font-size:.9rem">Browse by Category</h2>
+    <div class="section" style="background:var(--gray100);padding:40px 20px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <h2 class="section-title" style="font-size:1.5rem;">Why Business Owners Choose MakeMe Top</h2>
       </div>
-      <div class="cat-scroll" id="cat-scroll" role="list" aria-label="Kashmir travel categories">
-        <div class="cat-chip active" data-cat="all" onclick="filterCat(this,'all')" role="listitem"><div class="cat-icon">🏔️</div><div class="cat-label">All</div></div>
-        <div class="cat-chip" data-cat="Travel Agency" onclick="filterCat(this,'Travel Agency')" role="listitem"><div class="cat-icon">✈️</div><div class="cat-label">Travel</div></div>
-        <div class="cat-chip" data-cat="Resort" onclick="filterCat(this,'Resort')" role="listitem"><div class="cat-icon">🏨</div><div class="cat-label">Resorts</div></div>
-        <div class="cat-chip" data-cat="Hotel" onclick="filterCat(this,'Hotel')" role="listitem"><div class="cat-icon">🏩</div><div class="cat-label">Hotels</div></div>
-        <div class="cat-chip" data-cat="Houseboat" onclick="filterCat(this,'Houseboat')" role="listitem"><div class="cat-icon">🛶</div><div class="cat-label">Houseboats</div></div>
-        <div class="cat-chip" data-cat="Shikara" onclick="filterCat(this,'Shikara')" role="listitem"><div class="cat-icon">🚤</div><div class="cat-label">Shikara</div></div>
-        <div class="cat-chip" data-cat="Skiing" onclick="filterCat(this,'Skiing')" role="listitem"><div class="cat-icon">⛷️</div><div class="cat-label">Skiing</div></div>
-        <div class="cat-chip" data-cat="Guest House" onclick="filterCat(this,'Guest House')" role="listitem"><div class="cat-icon">🏡</div><div class="cat-label">Guest House</div></div>
-        <div class="cat-chip" data-cat="Tour Operator" onclick="filterCat(this,'Tour Operator')" role="listitem"><div class="cat-icon">🗺️</div><div class="cat-label">Tours</div></div>
-        <div class="cat-chip" data-cat="Adventure" onclick="filterCat(this,'Adventure')" role="listitem"><div class="cat-icon">🧗</div><div class="cat-label">Adventure</div></div>             
-        <div class="cat-chip" data-cat="Camping" onclick="filterCat(this,'Camping')" role="listitem"><div class="cat-icon">⛺</div><div class="cat-label">Camping</div></div>    
-        <div class="cat-chip" data-cat="Trekking" onclick="filterCat(this,'Trekking')" role="listitem"><div class="cat-icon">🥾</div><div class="cat-label">Trekking</div></div>
-      </div>
-    </div>
-
-    <div class="section" style="padding-top:12px;padding-bottom:0">
-      <div class="featured-banner" role="banner">
-        <h2>🏔️ Go Premium</h2>
-        <p>Get your travel agency or resort verified and listed on MakeMe Top — visible to thousands of tourists</p>
-        <button class="btn" onclick="navTo('premium')">Get Listed –> </button>
+      
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1000px;margin:0 auto;">
+        <div class="biz-card" style="background:white;padding:28px;border-radius:var(--radius);box-shadow:var(--shadow-sm);text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:14px;">📊</div>
+          <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:8px;color:var(--primary);">Business Dashboard</h3>
+          <p style="color:var(--gray500);font-size:0.88rem;line-height:1.6;">Track profile views, phone clicks, WhatsApp messages, and customer inquiries in real-time</p>
+        </div>
+        
+        <div class="biz-card" style="background:white;padding:28px;border-radius:var(--radius);box-shadow:var(--shadow-sm);text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:14px;">✅</div>
+          <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:8px;color:var(--primary);">Get Verified</h3>
+          <p style="color:var(--gray500);font-size:0.88rem;line-height:1.6;">Premium verified badge on your profile builds customer trust and increases bookings</p>
+        </div>
+        
+        <div class="biz-card" style="background:white;padding:28px;border-radius:var(--radius);box-shadow:var(--shadow-sm);text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:14px;">⭐</div>
+          <h3 style="font-size:1.05rem;font-weight:700;margin-bottom:8px;color:var(--primary);">Collect Reviews</h3>
+          <p style="color:var(--gray500);font-size:0.88rem;line-height:1.6;">Showcase 5-star customer reviews and build your online reputation across Kashmir</p>
+        </div>
       </div>
     </div>
 
-    <!-- ══ SPOTLIGHT SECTION ══ -->
-    <div class="spotlight-section" id="spotlight-section" style="display:none">
-      <div class="section-header" style="padding:0 0 8px">
-        <h2 class="section-title">⭐ Spotlight</h2>
-        <span style="font-size:.72rem;color:var(--gray400);font-weight:500">Featured listings</span>
-      </div>
-      <div id="spotlight-list"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-header">
-        <h2 class="section-title">🏆 Top MBP Listings</h2>
-      </div>
-      <div id="home-biz-list" role="list" aria-label="MBP listings – local businesses in Srinagar Kashmir J&K">
-        <div class="empty-state"><div class="empty-icon">🔥</div><h3>No MBPs yet</h3><p>Be the first to create your MBP in Srinagar!</p></div>
-      </div>
-    </div>
-    <div style="padding:0 16px 8px"><button class="btn btn-outline" onclick="tryAddBusiness()">🏔️ List Your Agency / Resort – Premium</button></div>
-    <div style="padding:12px 16px 8px;font-size:.72rem;color:var(--gray400);line-height:1.6;text-align:center">
-      <strong style="color:var(--gray500)">MBP · MakeMeTop Business Profile · MMT · MMTBP</strong><br/>
-      Create your free MBP and get ranked on Google. Srinagar's #1 local business directory for Jammu &amp; Kashmir. Find restaurants, shops, doctors, tech services &amp; more across J&amp;K. Free MBP listings. Verified customer reviews.
+    <div class="section" style="text-align:center;padding:48px 20px;">
+      <h2 class="section-title" style="font-size:1.4rem;margin-bottom:16px;">Ready to Grow Your Business?</h2>
+      <p style="max-width:560px;margin:0 auto 28px;color:var(--gray500);font-size:0.95rem;line-height:1.6;">Join 100+ verified travel agencies and resorts already using MakeMe Top to reach tourists</p>
+      <button class="btn" onclick="tryAddBusiness()" style="font-size:1.05rem;padding:15px 36px;">Get Started – Create Your MBP →</button>
     </div>
   </div>
 </div>
 
 <!-- ══ PAGE: SEARCH ══ -->
-<div id="page-search" class="page" role="main">
-  <header class="top-header"><div class="logo">Make<span>Me</span>Top</div><div class="spacer"></div></header>
-  <div class="scroll-body">
-    <div class="section" style="padding-bottom:8px">
-      <h2 class="section-title" style="margin-bottom:4px;font-size:.95rem">Search MBP Listings</h2>
-      <p style="font-size:.75rem;color:var(--gray400);margin-bottom:12px">Find MakeMeTop Business Profiles in Srinagar &amp; J&amp;K</p>
-      <div class="search-bar" role="search">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="search-input" placeholder="Restaurant, doctor, shop, tech…" oninput="doSearch(this.value)" aria-label="Search MBP listings in Srinagar"/>
-      </div>
-    </div>
-    <div id="search-results" role="list"><div class="empty-state"><div class="empty-icon">🔍</div><h3>Search MBP listings in Srinagar</h3><p>Type to find restaurants, services, shops &amp; more across J&amp;K</p></div></div>
-  </div>
-</div>
 
 <!-- ══ PAGE: ADD BUSINESS — 4-STEP PAYMENT FLOW ══ -->
 <div id="page-add" class="page">
@@ -891,6 +851,13 @@
         <div class="offer-banner-sub" id="p-offer-sub">Special discounted pricing active now</div>
         <div class="offer-countdown-row" id="p-offer-countdown"></div>
       </div>
+    </div>
+
+    <!-- 10-day offer countdown -->
+    <div class="discount-timer" style="margin-bottom:16px">
+      <div class="timer-icon">⏰</div>
+      <div class="timer-text"><strong>Limited Offer!</strong> Real price ₹1,499/mo<br/>Offer expires in</div>
+      <div class="timer-val" id="premium-countdown">Loading...</div>
     </div>
 
     <!-- Plan Cards -->
@@ -3107,9 +3074,8 @@ async function submitReview() {
   if (!currentBizData) return;
   const { addDoc, collection, serverTimestamp, doc, updateDoc, getDoc, getDocs, query: fsQ, where } = window._collections;
 
-  // Check 1 review per user per business (ADMIN BYPASS: admin can give unlimited reviews)
-  const isAdmin = window._currentUser?.email === 'abrarrtallks@gmail.com';
-  if (!editingReviewId && !isAdmin) {
+  // Check 1 review per user per business
+  if (!editingReviewId) {
     const existing = await getDocs(fsQ(collection(window._db,'reviews'), where('business_id','==',currentBizData.id), where('user_id','==',window._currentUser.uid)));
     if (!existing.empty) { showToast('⚠️ You already reviewed this business'); closeModal('modal-review'); return; }
   }

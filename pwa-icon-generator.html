@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>PWA Icon Generator - MBP</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;background:#f5f5f5}
+.card{background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-bottom:20px}
+h1{color:#1F1F1F;margin-bottom:10px}
+.subtitle{color:#666;margin-bottom:30px}
+canvas{border:2px solid #ddd;border-radius:8px;margin:10px 0;display:block}
+.preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;margin-top:20px}
+.preview-item{text-align:center;padding:15px;background:#f9fafb;border-radius:8px}
+.preview-item canvas{margin:0 auto}
+.btn{background:#F5A623;color:#fff;border:none;padding:12px 24px;font-size:16px;border-radius:8px;cursor:pointer;font-weight:bold;margin:5px}
+.btn:hover{background:#E09617}
+.btn-secondary{background:#6b7280}
+.btn-secondary:hover{background:#4b5563}
+.info{background:#e0f2fe;border-left:4px solid #0ea5e9;padding:15px;margin:20px 0;border-radius:6px}
+.logo-input{margin:20px 0}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h1>🎨 PWA Icon Generator</h1>
+<p class="subtitle">Generate all required icons for your MakeMeTop PWA</p>
+
+<div class="info">
+<strong>📌 What you need:</strong>
+<ul>
+<li>Upload your logo (square, PNG/JPG, at least 512x512px)</li>
+<li>Click "Generate Icons"</li>
+<li>Download all sizes (192x192 and 512x512)</li>
+<li>Upload to your server root as <code>icon-192.png</code> and <code>icon-512.png</code></li>
+</ul>
+</div>
+
+<div class="logo-input">
+<label style="display:block;font-weight:bold;margin-bottom:10px">Upload Your Logo:</label>
+<input type="file" id="logoUpload" accept="image/*" style="padding:10px"/>
+</div>
+
+<button class="btn" onclick="generateIcons()">✨ Generate Icons</button>
+
+<div id="preview" class="preview-grid" style="display:none"></div>
+
+<div id="download-section" style="margin-top:30px;text-align:center;display:none">
+<h3>📥 Download Icons</h3>
+<button class="btn" onclick="downloadIcon(192)">⬇️ Download 192x192</button>
+<button class="btn" onclick="downloadIcon(512)">⬇️ Download 512x512</button>
+<button class="btn btn-secondary" onclick="downloadAll()">⬇️ Download All</button>
+</div>
+</div>
+
+<div class="card" id="screenshot-section" style="display:none">
+<h2>📸 Screenshot Generator (Optional)</h2>
+<p class="subtitle">Generate placeholder screenshots for app stores</p>
+<button class="btn" onclick="generateScreenshots()">Generate Screenshots</button>
+<div id="screenshot-preview"></div>
+</div>
+
+<script>
+let originalImage = null;
+let canvases = {};
+
+document.getElementById('logoUpload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = function() {
+      originalImage = img;
+      console.log('✅ Image loaded:', img.width, 'x', img.height);
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function generateIcons() {
+  if (!originalImage) {
+    alert('⚠️ Please upload a logo first!');
+    return;
+  }
+  
+  const sizes = [192, 512];
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  preview.style.display = 'grid';
+  
+  sizes.forEach(size => {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    
+    // Fill with brand color background
+    ctx.fillStyle = '#1F1F1F';
+    ctx.fillRect(0, 0, size, size);
+    
+    // Calculate padding (10% on each side)
+    const padding = size * 0.1;
+    const imageSize = size - (padding * 2);
+    
+    // Draw image centered with padding
+    ctx.drawImage(originalImage, padding, padding, imageSize, imageSize);
+    
+    canvases[size] = canvas;
+    
+    // Create preview
+    const previewItem = document.createElement('div');
+    previewItem.className = 'preview-item';
+    previewItem.innerHTML = `
+      <strong>${size}x${size}</strong><br>
+      <canvas width="${Math.min(size, 150)}" height="${Math.min(size, 150)}" style="margin-top:10px"></canvas>
+    `;
+    
+    const previewCanvas = previewItem.querySelector('canvas');
+    const previewCtx = previewCanvas.getContext('2d');
+    const scale = Math.min(150, size) / size;
+    previewCtx.drawImage(canvas, 0, 0, size * scale, size * scale);
+    
+    preview.appendChild(previewItem);
+  });
+  
+  document.getElementById('download-section').style.display = 'block';
+  document.getElementById('screenshot-section').style.display = 'block';
+}
+
+function downloadIcon(size) {
+  if (!canvases[size]) {
+    alert('⚠️ Generate icons first!');
+    return;
+  }
+  
+  canvases[size].toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `icon-${size}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+function downloadAll() {
+  Object.keys(canvases).forEach(size => {
+    setTimeout(() => downloadIcon(parseInt(size)), 100 * size);
+  });
+}
+
+function generateScreenshots() {
+  const preview = document.getElementById('screenshot-preview');
+  preview.innerHTML = '<p style="margin:20px 0;color:#666">Generating placeholder screenshots...</p>';
+  
+  // Mobile screenshot (390x844)
+  const mobileCanvas = document.createElement('canvas');
+  mobileCanvas.width = 390;
+  mobileCanvas.height = 844;
+  const mCtx = mobileCanvas.getContext('2d');
+  
+  // Background
+  mCtx.fillStyle = '#FFFFFF';
+  mCtx.fillRect(0, 0, 390, 844);
+  
+  // Header
+  mCtx.fillStyle = '#1F1F1F';
+  mCtx.fillRect(0, 0, 390, 60);
+  
+  // Logo area
+  mCtx.fillStyle = '#F5A623';
+  mCtx.font = 'bold 24px Arial';
+  mCtx.fillText('MBP', 20, 40);
+  
+  // Content placeholder
+  mCtx.fillStyle = '#f3f4f6';
+  mCtx.fillRect(20, 80, 350, 200);
+  mCtx.fillRect(20, 300, 350, 100);
+  mCtx.fillRect(20, 420, 350, 150);
+  
+  // Desktop screenshot (1920x1080)
+  const desktopCanvas = document.createElement('canvas');
+  desktopCanvas.width = 1920;
+  desktopCanvas.height = 1080;
+  const dCtx = desktopCanvas.getContext('2d');
+  
+  // Background
+  dCtx.fillStyle = '#FFFFFF';
+  dCtx.fillRect(0, 0, 1920, 1080);
+  
+  // Header
+  dCtx.fillStyle = '#1F1F1F';
+  dCtx.fillRect(0, 0, 1920, 80);
+  
+  // Logo
+  dCtx.fillStyle = '#F5A623';
+  dCtx.font = 'bold 32px Arial';
+  dCtx.fillText('MBP - MakeMeTop', 40, 50);
+  
+  // Content grid
+  for (let i = 0; i < 6; i++) {
+    const x = 40 + (i % 3) * 620;
+    const y = 120 + Math.floor(i / 3) * 450;
+    dCtx.fillStyle = '#f3f4f6';
+    dCtx.fillRect(x, y, 580, 400);
+  }
+  
+  preview.innerHTML = `
+    <div style="margin-top:20px">
+      <h4>Mobile Screenshot (390x844)</h4>
+      <canvas width="195" height="422" id="mobile-preview"></canvas>
+      <button class="btn" onclick="downloadScreenshot('mobile', 390, 844)" style="margin-top:10px">⬇️ Download Mobile</button>
+    </div>
+    <div style="margin-top:20px">
+      <h4>Desktop Screenshot (1920x1080)</h4>
+      <canvas width="480" height="270" id="desktop-preview"></canvas>
+      <button class="btn" onclick="downloadScreenshot('desktop', 1920, 1080)" style="margin-top:10px">⬇️ Download Desktop</button>
+    </div>
+  `;
+  
+  // Draw previews
+  const mobilePreview = document.getElementById('mobile-preview');
+  const mPrevCtx = mobilePreview.getContext('2d');
+  mPrevCtx.drawImage(mobileCanvas, 0, 0, 195, 422);
+  
+  const desktopPreview = document.getElementById('desktop-preview');
+  const dPrevCtx = desktopPreview.getContext('2d');
+  dPrevCtx.drawImage(desktopCanvas, 0, 0, 480, 270);
+  
+  // Store for download
+  window.screenshotCanvases = {
+    mobile: mobileCanvas,
+    desktop: desktopCanvas
+  };
+}
+
+function downloadScreenshot(type, width, height) {
+  const canvas = window.screenshotCanvases[type];
+  if (!canvas) return;
+  
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `screenshot-${type}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+
+</body>
+</html>
