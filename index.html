@@ -853,6 +853,7 @@
       </div>
     </div>
 
+
     <!-- Plan Cards -->
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
 
@@ -3417,8 +3418,19 @@ async function adminResolveClaim(claimId, action, bizId, newOwnerUid, newOwnerEm
     loadAdmin();
   } catch(e) { showToast('❌ Error: ' + e.message); }
 }
-function callBusiness() { if (!currentBizData?.phone) return; window.location.href='tel:'+currentBizData.phone.replace(/\s/g,''); }
-function whatsappBusiness() { if(currentBizData?.id) trackEvent(currentBizData.id,'whatsapp'); const num=(currentBizData?.whatsapp||currentBizData?.phone||'').replace(/\D/g,''); if(!num){showToast('⚠️ WhatsApp not available');return;} window.open('https://wa.me/'+(num.startsWith('91')?num:'91'+num),'_blank'); }
+function callBusiness() { 
+  console.log('callBusiness called', currentBizData);
+  if (!currentBizData?.phone) { showToast('⚠️ Phone number not available'); return; }
+  if(currentBizData?.id) trackEvent(currentBizData.id,'phone'); 
+  window.location.href='tel:'+currentBizData.phone.replace(/\s/g,''); 
+}
+function whatsappBusiness() { 
+  console.log('whatsappBusiness called', currentBizData);
+  if(currentBizData?.id) trackEvent(currentBizData.id,'whatsapp'); 
+  const num=(currentBizData?.whatsapp||currentBizData?.phone||'').replace(/\D/g,''); 
+  if(!num){showToast('⚠️ WhatsApp not available');return;} 
+  window.open('https://wa.me/'+(num.startsWith('91')?num:'91'+num),'_blank'); 
+}
 function shareBusiness() {
   if (!currentBizData) return;
   const url = `https://makemetop.in/biz.html?id=${currentBizData.id}`;
