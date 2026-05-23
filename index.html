@@ -853,6 +853,7 @@
       </div>
     </div>
 
+   
 
     <!-- Plan Cards -->
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
@@ -2990,7 +2991,13 @@ function injectBizSchema(b) {
   });
 }
 
-function openWebsite() { let url=currentBizData?.website; if(!url)return; if(!url.startsWith('http'))url='https://'+url; window.open(url,'_blank','noopener'); }
+function openWebsite() { 
+  if(currentBizData?.id) trackEvent(currentBizData.id,'website'); 
+  let url=currentBizData?.website; 
+  if(!url)return; 
+  if(!url.startsWith('http'))url='https://'+url; 
+  window.open(url,'_blank','noopener'); 
+}
 
 // ══════════════════════════════════════
 //  REVIEWS (with 1-per-user check)
