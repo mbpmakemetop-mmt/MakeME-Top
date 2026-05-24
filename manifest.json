@@ -1,70 +1,157 @@
 {
-  "name": "MBP – MakeMeTop Business Profile",
-  "short_name": "MBP",
-  "description": "MBP – MakeMeTop Business Profile. Srinagar's #1 local business directory for Jammu & Kashmir. Create your free MBP and rank on Google.",
+  "name": "MakeMe Top — Kashmir Travel Business Directory",
+  "short_name": "MakeMe Top",
+  "description": "Premium business listing platform for Kashmir travel agencies, resorts & hotels. Get verified badge, Google ranking & analytics. ₹799/month.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#FFFFFF",
+  "orientation": "portrait-primary",
+  "background_color": "#1F1F1F",
   "theme_color": "#1F1F1F",
-  "categories": ["business", "local", "lifestyle"],
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": [
+    "business",
+    "travel",
+    "productivity",
+    "lifestyle"
+  ],
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
     {
-      "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
+      "src": "screenshots/home.png",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "MBP Home Screen"
+      "label": "Browse 100+ verified Kashmir travel businesses"
     },
     {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1920x1080",
+      "src": "screenshots/business-detail.png",
+      "sizes": "1080x1920",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "MBP Dashboard"
+      "form_factor": "narrow",
+      "label": "Verified business profiles with reviews and photos"
+    },
+    {
+      "src": "screenshots/dashboard.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Analytics dashboard for business owners"
+    },
+    {
+      "src": "screenshots/search.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Find travel agencies, resorts & hotels in Kashmir"
     }
   ],
   "shortcuts": [
     {
       "name": "Create MBP",
       "short_name": "Create",
-      "description": "Create your MakeMeTop Business Profile",
+      "description": "List your Kashmir travel business",
       "url": "/?action=add",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Search MBPs",
-      "short_name": "Search",
-      "description": "Find local businesses in Srinagar J&K",
-      "url": "/?action=search",
+      "name": "My Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your business analytics",
+      "url": "/?page=dashboard",
       "icons": [
         {
-          "src": "/icon-192.png",
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Search Businesses",
+      "short_name": "Search",
+      "description": "Find Kashmir travel agencies",
+      "url": "/?page=search",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Premium Plans",
+      "short_name": "Premium",
+      "description": "View pricing and upgrade",
+      "url": "/?page=premium",
+      "icons": [
+        {
+          "src": "icon-192.png",
           "sizes": "192x192",
           "type": "image/png"
         }
       ]
     }
-  ]
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.makemetop.app",
+      "id": "com.makemetop.app"
+    }
+  ],
+  "prefer_related_applications": false,
+  "iarc_rating_id": "",
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+makemetop",
+      "url": "/?biz=%s"
+    }
+  ],
+  "gcm_sender_id": "103953800507",
+  "permissions": [
+    "geolocation"
+  ],
+  "serviceworker": {
+    "src": "sw.js",
+    "scope": "/",
+    "update_via_cache": "none"
+  }
 }
