@@ -15,7 +15,15 @@
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CMTPFYR5EK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-CMTPFYR5EK');
+</script>
 <!-- Razorpay -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -512,7 +520,7 @@ async function loadAnalytics() {
       
       // Count totals
       if (type === 'view') views++;
-      else if (type === 'phone' || type === 'call') calls++;  // ✅ Fixed: check for 'phone'
+      else if (type === 'call') calls++;
       else if (type === 'whatsapp') whatsapps++;
       else if (type === 'website') websites++;
       
