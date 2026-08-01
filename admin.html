@@ -1398,7 +1398,7 @@ async function loadSpotlights() {
     const now   = new Date().toISOString();
     const all   = snap.docs.map(d=>({id:d.id,...d.data()}));
     const live  = all.filter(b => b.spotlight_until && b.spotlight_until > now).sort((a,b)=>a.spotlight_until>b.spotlight_until?1:-1);
-    const rest  = all.filter(b => !b.spotlight_until || b.spotlight_until <= now).slice(0,20);
+    const rest  = all.filter(b => !b.spotlight_until || b.spotlight_until <= now).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
 
     c.innerHTML = `
     <div style="padding:16px">
@@ -1417,10 +1417,11 @@ async function loadSpotlights() {
           <button onclick="removeSpotlight('${b.id}')" style="padding:5px 12px;background:#FEE2E2;color:#991B1B;border:none;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer">Remove</button>
         </div>`;
       }).join('')}
-      <h3 style="font-size:.9rem;font-weight:700;margin-bottom:10px;margin-top:16px">Add Spotlight Manually</h3>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${rest.slice(0,10).map(b=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--gray50);border:1px solid var(--gray200);border-radius:8px">
+      <h3 style="font-size:.9rem;font-weight:700;margin-bottom:10px;margin-top:16px">Add Spotlight Manually (${rest.length} businesses)</h3>
+      <input type="text" id="spotlight-search" placeholder="🔍 Search businesses by name..." oninput="filterSpotlightCandidates(this.value)" style="width:100%;padding:9px 13px;border:1px solid var(--gray200);border-radius:8px;font-size:.83rem;margin-bottom:10px;box-sizing:border-box"/>
+      <div id="spotlight-candidates" style="display:flex;flex-direction:column;gap:6px">
+        ${rest.map(b=>`
+        <div class="spotlight-candidate-row" data-name="${esc((b.name||'').toLowerCase())}" style="display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--gray50);border:1px solid var(--gray200);border-radius:8px">
           <span style="font-size:.83rem;font-weight:600">${esc(b.name)}</span>
           <div style="display:flex;gap:6px">
             <button onclick="adminAddSpotlight('${b.id}',1)" style="padding:4px 10px;background:var(--primary);color:#fff;border:none;border-radius:6px;font-size:.72rem;cursor:pointer">1d ₹49</button>
@@ -1431,6 +1432,12 @@ async function loadSpotlights() {
       </div>
     </div>`;
   } catch(e) { document.getElementById('content').innerHTML = '<p style="padding:20px;color:var(--red)">Error: '+e.message+'</p>'; }
+}
+function filterSpotlightCandidates(q) {
+  const query = q.trim().toLowerCase();
+  document.querySelectorAll('.spotlight-candidate-row').forEach(row => {
+    row.style.display = row.dataset.name.includes(query) ? 'flex' : 'none';
+  });
 }
 async function removeSpotlight(bizId) {
   if (!confirm('Remove spotlight?')) return;
